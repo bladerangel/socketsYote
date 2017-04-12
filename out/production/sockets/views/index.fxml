@@ -21,12 +21,16 @@
    <center>
       <AnchorPane fx:id="jogo" BorderPane.alignment="CENTER">
          <children>
-            <VBox prefHeight="395.0" prefWidth="400.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox prefHeight="443.0" prefWidth="430.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <HBox alignment="CENTER_LEFT" spacing="15.0">
+                  <HBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#removerPecaAdversario" text="12" />
-                        <Text fx:id="numeroPecasAdversarias" strokeType="OUTSIDE" strokeWidth="0.0" text="12 peças restantes">
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@imagens/pecas.png" />
+                           </image>
+                        </ImageView>
+                        <Text fx:id="numeroPecasAdversarias" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: red;" text="12 peças adversarias restantes">
                            <font>
                               <Font name="System Bold Italic" size="14.0" />
                            </font>
@@ -54,6 +58,9 @@
                            </font>
                         </Text>
                      </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
                   </HBox>
                </children>
             </VBox>
@@ -96,7 +103,7 @@
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Text>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: red;" text="Turno Atual: Jogador 1" textAlignment="CENTER" wrappingWidth="295.484375">
+                        <Text fx:id="turno" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: red;" text="Turno Atual: Jogador 1" textAlignment="CENTER" wrappingWidth="295.484375">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>

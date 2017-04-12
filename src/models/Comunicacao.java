@@ -17,12 +17,15 @@ public class Comunicacao {
         clientbffr = new byte[1000];
     }
 
-    public void enviar(String mensagem, int porta) throws IOException {
-
-        serverbffr = mensagem.getBytes();
-        DatagramPacket sendpack = new DatagramPacket(serverbffr,
-                serverbffr.length, InetAddress.getLocalHost(), porta);
-        client.send(sendpack);
+    public void enviar(String mensagem, int porta) {
+        try {
+            serverbffr = mensagem.getBytes();
+            DatagramPacket sendpack = new DatagramPacket(serverbffr,
+                    serverbffr.length, InetAddress.getLocalHost(), porta);
+            client.send(sendpack);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

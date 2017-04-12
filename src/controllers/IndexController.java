@@ -40,70 +40,29 @@ public class IndexController implements Initializable {
     @FXML
     Text numeroJogador;
 
-    ComunicacaoTCP comunicacao;
-
-    String mensagemRecebida;
-
-    private int jogador;
+    @FXML
+    Text turno;
 
     private IndexService indexService;
 
-
-    public IndexController() {
-        indexService = new IndexService();
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            comunicacao = new ComunicacaoTCP();
-            comunicacao.iniciarServidor(9999);
-            comunicacao.esperandoConexao();
-            jogador = 1;
-        } catch (IOException e) {
-            try {
-                comunicacao.iniciarCliente(9999);
-                jogador = 2;
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
-
-        indexService.criarTabuleiro(tabuleiro);
-        numeroJogador.setText("Você: Jogador " + jogador);
-
-        new Thread(() -> {
-            try {
-                while (true) {
-                    mensagemRecebida = comunicacao.recebePacote();
-                    System.out.println("mensagem= " + mensagemRecebida);
-                    chat.appendText(mensagemRecebida + "\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-
+        indexService = new IndexService(tabuleiro, numeroJogador, chat, escrever, turno, numeroPecasAdversarias);
+        indexService.iniciarComunicacao();
+        indexService.criarTabuleiro();
+        indexService.iniciarThreadRecebePacotes();
     }
 
     @FXML
     public void removerPeca() {
-        if (indexService.getTabuleiroJogo().getTurnoJogador() == 1 && !indexService.getTabuleiroJogo().isEscolherCasa() && !indexService.getTabuleiroJogo().isTirouPeca()) {
+        if (indexService.getTabuleiroJogo().getTurnoJogador() == indexService.getJogador() && !indexService.getTabuleiroJogo().isEscolherCasa() && !indexService.getTabuleiroJogo().isTirouPeca()) {
             indexService.removerPeca(numeroPecas);
         }
     }
 
     @FXML
-    public void removerPecaAdversario() {
-        if (indexService.getTabuleiroJogo().getTurnoJogador() == 2 && !indexService.getTabuleiroJogo().isEscolherCasa() && !indexService.getTabuleiroJogo().isTirouPeca()) {
-            indexService.removerPeca(numeroPecasAdversarias);
-        }
-    }
-
-    @FXML
     public void passarTurno() {
-        indexService.getTabuleiroJogo().setTurnoJogador();
+       indexService.passarTurno();
     }
 
     @FXML
@@ -113,8 +72,6 @@ public class IndexController implements Initializable {
 
     @FXML
     public void enviar() throws IOException {
-        comunicacao.enviarPacote(escrever.getText());
-        chat.appendText(escrever.getText() + "\n");
-        escrever.clear();
+        indexService.chat();
     }
 }
