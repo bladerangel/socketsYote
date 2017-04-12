@@ -91,7 +91,7 @@
                <children>
                   <VBox alignment="CENTER_LEFT" spacing="10.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: red;" text="Você: Jogador 1" textAlignment="CENTER" wrappingWidth="295.484375">
+                        <Text fx:id="numeroJogador" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: red;" text="Você: Jogador 1" textAlignment="CENTER" wrappingWidth="295.484375">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>

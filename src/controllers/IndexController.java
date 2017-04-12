@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.beans.value.ObservableStringValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,8 +10,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import models.Comunicacao;
+import models.ComunicacaoTCP;
 import services.IndexService;
 
+import java.io.IOException;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -32,7 +37,17 @@ public class IndexController implements Initializable {
     @FXML
     TextArea chat;
 
+    @FXML
+    Text numeroJogador;
+
+    ComunicacaoTCP comunicacao;
+
+    String mensagemRecebida;
+
+    private int jogador;
+
     private IndexService indexService;
+
 
     public IndexController() {
         indexService = new IndexService();
@@ -40,7 +55,35 @@ public class IndexController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        try {
+            comunicacao = new ComunicacaoTCP();
+            comunicacao.iniciarServidor(9999);
+            comunicacao.esperandoConexao();
+            jogador = 1;
+        } catch (IOException e) {
+            try {
+                comunicacao.iniciarCliente(9999);
+                jogador = 2;
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+
         indexService.criarTabuleiro(tabuleiro);
+        numeroJogador.setText("Você: Jogador " + jogador);
+
+        new Thread(() -> {
+            try {
+                while (true) {
+                    mensagemRecebida = comunicacao.recebePacote();
+                    System.out.println("mensagem= " + mensagemRecebida);
+                    chat.appendText(mensagemRecebida + "\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
 
     }
 
@@ -69,7 +112,8 @@ public class IndexController implements Initializable {
     }
 
     @FXML
-    public void enviar() {
+    public void enviar() throws IOException {
+        comunicacao.enviarPacote(escrever.getText());
         chat.appendText(escrever.getText() + "\n");
         escrever.clear();
     }
