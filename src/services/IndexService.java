@@ -184,7 +184,16 @@ public class IndexService {
     public void verificaCaptura(int posicaoInicial, int posicaoFinal) {
         switch (posicaoFinal - posicaoInicial) {
             case 2:
-                capturarPeca(posicaoInicial, posicaoFinal, true);
+                capturarPeca(posicaoInicial, posicaoFinal, posicaoInicial + 1, true);
+                break;
+            case -2:
+                capturarPeca(posicaoInicial, posicaoFinal, posicaoInicial - 1, true);
+                break;
+            case 12:
+                capturarPeca(posicaoInicial, posicaoFinal, posicaoInicial + 6, true);
+                break;
+            case -12:
+                capturarPeca(posicaoInicial, posicaoFinal, posicaoInicial - 6, true);
                 break;
             default:
                 break;
@@ -202,18 +211,18 @@ public class IndexService {
 
     }
 
-    public void capturarPeca(int posicaoInicial, int posicaoFinal, boolean enviarPacote) {
-        int peca = casas.get(posicaoFinal - 1).getCasa().getPeca().getJogador();
+    public void capturarPeca(int posicaoInicial, int posicaoFinal, int posicaoVerificar, boolean enviarPacote) {
+        int peca = casas.get(posicaoVerificar).getCasa().getPeca().getJogador();
         if (peca != tabuleiroJogo.getTurnoJogador() && peca != 0) {
             casas.get(posicaoInicial).removerPeca(tabuleiroJogo.getTurnoJogador());
-            casas.get(posicaoFinal - 1).removerPeca(peca);
+            casas.get(posicaoVerificar).removerPeca(peca);
             casas.get(posicaoFinal).colocarPeca(tabuleiroJogo.getTurnoJogador());
             tabuleiroJogo.setRemoverOutraPeca(true);
-            adicionarMensagemChat("O jogador " + tabuleiroJogo.getTurnoJogador() + " capturou a peça da casa " + (posicaoFinal - 1));
+            adicionarMensagemChat("O jogador " + tabuleiroJogo.getTurnoJogador() + " capturou a peça da casa " + posicaoVerificar);
             if (enviarPacote) {
                 removerPeca.setDisable(true);
                 passarTurno.setDisable(false);
-                comunicacao.enviarPacote("capturarPeca:" + posicaoInicial + ":" + posicaoFinal);
+                comunicacao.enviarPacote("capturarPeca:" + posicaoInicial + ":" + posicaoFinal + ":" + posicaoVerificar);
             }
         }
     }
@@ -238,9 +247,9 @@ public class IndexService {
                     andarPeca(Integer.parseInt(mensagem[1]), Integer.parseInt(mensagem[2]), false);
                 } else if (mensagemRecebida.matches("^adicionarPecaTabuleiro:\\d+$")) {
                     adicionarPecaTabuleiro(Integer.parseInt(mensagemRecebida.split(":")[1]), false);
-                } else if (mensagemRecebida.matches("^capturarPeca:\\d+:\\d+$")) {
+                } else if (mensagemRecebida.matches("^capturarPeca:\\d+:\\d+:\\d+$")) {
                     String[] mensagem = mensagemRecebida.split(":");
-                    capturarPeca(Integer.parseInt(mensagem[1]), Integer.parseInt(mensagem[2]), false);
+                    capturarPeca(Integer.parseInt(mensagem[1]), Integer.parseInt(mensagem[2]), Integer.parseInt(mensagem[3]), false);
                 } else if (mensagemRecebida.matches("^removerOutraPeca:\\d+$")) {
                     removerOutraPeca(Integer.parseInt(mensagemRecebida.split(":")[1]), false);
                 } else if (mensagemRecebida.matches("^passarTurno$")) {
