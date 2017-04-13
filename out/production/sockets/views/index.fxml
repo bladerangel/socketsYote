@@ -40,7 +40,7 @@
                   <Pane fx:id="tabuleiro" />
                   <HBox alignment="CENTER_LEFT" spacing="15.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#removerPeca" text="Adicionar peça">
+                        <Button fx:id="removerPeca" mnemonicParsing="false" onAction="#removerPeca" text="Adicionar peça">
                            <graphic>
                               <ImageView pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -110,7 +110,7 @@
                         </Text>
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#passarTurno" text="Passar Turno">
+                              <Button fx:id="passarTurno" disable="true" mnemonicParsing="false" onAction="#passarTurno" text="Passar Turno">
                                  <graphic>
                                     <ImageView pickOnBounds="true" preserveRatio="true">
                                        <image>

@@ -4,17 +4,11 @@ public class Tabuleiro {
 
     private int pecas;
     private int pecasAdversarias;
-    private boolean escolherCasa;
     private int turnoJogador;
-    private boolean jaJogou;
     private boolean removerOutraPeca;
-    private boolean jaAndou;
 
     public Tabuleiro() {
-        escolherCasa = false;
-        jaJogou = false;
         removerOutraPeca = false;
-        jaAndou = false;
         turnoJogador = 1;
         pecas = 12;
         pecasAdversarias = 12;
@@ -25,22 +19,11 @@ public class Tabuleiro {
             turnoJogador = 2;
         else
             turnoJogador = 1;
-        jaAndou = false;
-        jaJogou = false;
-        escolherCasa = false;
         removerOutraPeca = false;
     }
 
     public int getTurnoJogador() {
         return turnoJogador;
-    }
-
-    public void setEscolherCasa(boolean escolherCasa) {
-        this.escolherCasa = escolherCasa;
-    }
-
-    public boolean isEscolherCasa() {
-        return escolherCasa;
     }
 
     public void setPecas() {
@@ -57,14 +40,6 @@ public class Tabuleiro {
             return pecasAdversarias;
     }
 
-    public void setJaJogou(boolean jaJogou) {
-        this.jaJogou = jaJogou;
-    }
-
-    public boolean isJaJogou() {
-        return jaJogou;
-    }
-
     public void setRemoverOutraPeca(boolean removerOutraPeca) {
         this.removerOutraPeca = removerOutraPeca;
     }
@@ -73,11 +48,4 @@ public class Tabuleiro {
         return removerOutraPeca;
     }
 
-    public void setJaAndou(boolean jaAndou) {
-        this.jaAndou = jaAndou;
-    }
-
-    public boolean isJaAndou() {
-        return jaAndou;
-    }
 }

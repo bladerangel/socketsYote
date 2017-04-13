@@ -48,11 +48,17 @@ public class IndexController implements Initializable {
     @FXML
     Text turno;
 
+    @FXML
+    Button removerPeca;
+
+    @FXML
+    Button passarTurno;
+
     private IndexService indexService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        indexService = new IndexService(tabuleiro, numeroJogador, chat, escrever, turno, numeroPecasAdversarias);
+        indexService = new IndexService(tabuleiro, numeroJogador, chat, escrever, turno, numeroPecasAdversarias, removerPeca,numeroPecas, passarTurno);
         indexService.iniciarComunicacao();
         indexService.criarTabuleiro();
         indexService.iniciarThreadRecebePacotes();
@@ -61,12 +67,12 @@ public class IndexController implements Initializable {
 
     @FXML
     public void removerPeca() {
-        indexService.removerPeca(numeroPecas);
+        indexService.removerPeca();
     }
 
     @FXML
     public void passarTurno() {
-        indexService.passarTurno();
+        indexService.passarTurno(true);
     }
 
     @FXML
@@ -76,6 +82,6 @@ public class IndexController implements Initializable {
 
     @FXML
     public void enviar() throws IOException {
-        indexService.chat();
+        indexService.enviarMensagemChat();
     }
 }
