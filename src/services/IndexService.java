@@ -96,13 +96,18 @@ public class IndexService {
                 mensagemRecebida = comunicacao.recebePacote();
                 if (mensagemRecebida.matches("^andar:\\d:\\d+:\\d+$")) {
                     String[] mensagem = mensagemRecebida.split(":");
-                    casas.get(Integer.parseInt(mensagem[2])).removerPeca();
+                    casas.get(Integer.parseInt(mensagem[2])).removerPeca(Integer.parseInt(mensagem[1]));
                     casas.get(Integer.parseInt(mensagem[3])).colocarPeca(Integer.parseInt(mensagem[1]));
 
                 } else if (mensagemRecebida.matches("^colocar:\\d:\\d+$")) {
                     String[] mensagem = mensagemRecebida.split(":");
                     System.out.println(mensagem[2]);
                     casas.get(Integer.parseInt(mensagem[2])).colocarPeca(Integer.parseInt(mensagem[1]));
+
+                } else if (mensagemRecebida.matches("^capturar:\\d:\\d+:\\d+$")) {
+                    String[] mensagem = mensagemRecebida.split(":");
+                    casas.get(Integer.parseInt(mensagem[2])).removerPeca(Integer.parseInt(mensagem[1]));
+                    casas.get(Integer.parseInt(mensagem[3])).colocarPeca(Integer.parseInt(mensagem[1]));
 
                 } else if (mensagemRecebida.matches("^turno:\\d$")) {
                     String[] mensagem = mensagemRecebida.split(":");
@@ -155,25 +160,32 @@ public class IndexService {
         if (tabuleiroJogo.getTurnoJogador() == jogador && !tabuleiroJogo.isEscolherCasa() && !tabuleiroJogo.isJaJogou()) {
             tabuleiroJogo.setPecas();
             posicaoInicial = -1;
-            tabuleiroJogo.setEscolherCasa();
+            tabuleiroJogo.setEscolherCasa(true);
             numeroPecas.setText(tabuleiroJogo.getPecas() + " peças restantes");
         }
     }
 
     public void verificarMovimento(int posicaoInicial, int posicaoFinal) {
-        if (posicaoInicial == -1 && tabuleiroJogo.isEscolherCasa() && !tabuleiroJogo.isJaJogou()) {
-            tabuleiroJogo.setJaJogou();
-            tabuleiroJogo.setEscolherCasa();
+        if (posicaoInicial == -1 && tabuleiroJogo.isEscolherCasa() && !tabuleiroJogo.isJaJogou()) { //colocar Peça tabuleiro
+            tabuleiroJogo.setJaJogou(true);
+            tabuleiroJogo.setEscolherCasa(false);
             casas.get(posicaoFinal).colocarPeca(tabuleiroJogo.getTurnoJogador());
             comunicacao.enviarPacote("colocar:" + jogador + ":" + posicaoFinal);
             comunicacao.enviarPacote("pecasAdversarias:" + jogador + ":" + tabuleiroJogo.getPecas());
-        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == tabuleiroJogo.getTurnoJogador() && !tabuleiroJogo.isJaJogou()) {
+            passarTurno();
+        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == tabuleiroJogo.getTurnoJogador()) { //escolher peça
             this.posicaoInicial = posicaoFinal;
             tabuleiroJogo.setEscolherCasa(true);
             System.out.println("quero andar");
-        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == 0 && tabuleiroJogo.isEscolherCasa() && !tabuleiroJogo.isJaJogou()) {
+        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == 0 && tabuleiroJogo.isEscolherCasa() && !tabuleiroJogo.isJaJogou() && !tabuleiroJogo.isJaAndou()) {//andar ou capturar uma peça
             verificarMovimentoAndar(posicaoInicial, posicaoFinal);
+            verificaCaptura(posicaoInicial, posicaoFinal);
             System.out.println("andou");
+        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == 0 && tabuleiroJogo.isEscolherCasa() && tabuleiroJogo.isJaJogou() && !tabuleiroJogo.isRemoverOutraPeca()) {//capturar multipla peças
+            System.out.println("quero capturar");
+            verificaCaptura(posicaoInicial, posicaoFinal);
+        } else if (tabuleiroJogo.isRemoverOutraPeca()) {//remover peça ao realizar a captura multipla
+            retirarOutraPeca(posicaoFinal);s
         }
     }
 
@@ -181,30 +193,63 @@ public class IndexService {
 
         switch (posicaoFinal - posicaoInicial) {
             case 1:
-                mover(posicaoInicial, posicaoFinal);
+                andar(posicaoInicial, posicaoFinal);
                 break;
             case -1:
-                mover(posicaoInicial, posicaoFinal);
+                andar(posicaoInicial, posicaoFinal);
                 break;
             case 6:
-                mover(posicaoInicial, posicaoFinal);
+                andar(posicaoInicial, posicaoFinal);
                 break;
             case -6:
-                mover(posicaoInicial, posicaoFinal);
+                andar(posicaoInicial, posicaoFinal);
                 break;
             default:
-                tabuleiroJogo.setEscolherCasa();
                 break;
         }
 
     }
 
-    public void mover(int posicaoInicial, int posicaoFinal) {
-        casas.get(posicaoInicial).removerPeca();
+    public void verificaCaptura(int posicaoInicial, int posicaoFinal) {
+        switch (posicaoFinal - posicaoInicial) {
+            case 2:
+                capturar(posicaoInicial, posicaoFinal);
+                break;
+            default:
+                tabuleiroJogo.setEscolherCasa(false);
+                break;
+        }
+    }
+
+    public void andar(int posicaoInicial, int posicaoFinal) {
+        casas.get(posicaoInicial).removerPeca(tabuleiroJogo.getTurnoJogador());
         casas.get(posicaoFinal).colocarPeca(tabuleiroJogo.getTurnoJogador());
         comunicacao.enviarPacote("andar:" + jogador + ":" + posicaoInicial + ":" + posicaoFinal);
-        //tabuleiroJogo.setEscolherCasa();
-        tabuleiroJogo.setJaJogou();
+        tabuleiroJogo.setEscolherCasa(false);
+        tabuleiroJogo.setJaJogou(true);
+        tabuleiroJogo.setJaAndou(true);
+        passarTurno();
+    }
+
+    public void capturar(int posicaoInicial, int posicaoFinal) {
+        int peca = casas.get(posicaoFinal - 1).getCasa().getPeca().getJogador();
+        if (peca != tabuleiroJogo.getTurnoJogador() && peca != 0) {
+            casas.get(posicaoInicial).removerPeca(tabuleiroJogo.getTurnoJogador());
+            casas.get(posicaoFinal - 1).removerPeca(peca);
+            casas.get(posicaoFinal).colocarPeca(tabuleiroJogo.getTurnoJogador());
+            tabuleiroJogo.setEscolherCasa(false);
+            tabuleiroJogo.setJaJogou(true);
+            tabuleiroJogo.setRemoverOutraPeca(true);
+        }
+    }
+
+    public void retirarOutraPeca(int posicaoFinal) {
+        int peca = casas.get(posicaoFinal).getCasa().getPeca().getJogador();
+        if (peca != tabuleiroJogo.getTurnoJogador() && peca != 0) {
+            casas.get(posicaoFinal).removerPeca(peca);
+            System.out.println("peca removida");
+            tabuleiroJogo.setRemoverOutraPeca(false);
+        }
     }
 
     public Tabuleiro getTabuleiroJogo() {
