@@ -61,9 +61,7 @@ public class IndexController implements Initializable {
 
     @FXML
     public void removerPeca() {
-        if (indexService.getTabuleiroJogo().getTurnoJogador() == indexService.getJogador() && !indexService.getTabuleiroJogo().isEscolherCasa() && !indexService.getTabuleiroJogo().isTirouPeca()) {
-            indexService.removerPeca(numeroPecas);
-        }
+        indexService.removerPeca(numeroPecas);
     }
 
     @FXML

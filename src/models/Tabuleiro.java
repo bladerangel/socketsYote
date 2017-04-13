@@ -6,11 +6,11 @@ public class Tabuleiro {
     private int pecasAdversarias;
     private boolean escolherCasa;
     private int turnoJogador;
-    private boolean tirouPeca;
+    private boolean jaJogou;
 
     public Tabuleiro() {
         escolherCasa = false;
-        tirouPeca = false;
+        jaJogou = false;
         turnoJogador = 1;
         pecas = 12;
         pecasAdversarias = 12;
@@ -21,7 +21,7 @@ public class Tabuleiro {
             turnoJogador = 2;
         else
             turnoJogador = 1;
-        tirouPeca = false;
+        jaJogou = false;
         escolherCasa = false;
     }
 
@@ -31,6 +31,10 @@ public class Tabuleiro {
 
     public void setEscolherCasa() {
         escolherCasa = !escolherCasa;
+    }
+
+    public void setEscolherCasa(boolean escolherCasa) {
+        this.escolherCasa = escolherCasa;
     }
 
     public boolean isEscolherCasa() {
@@ -51,11 +55,11 @@ public class Tabuleiro {
             return pecasAdversarias;
     }
 
-    public void setTirouPeca() {
-        tirouPeca = !tirouPeca;
+    public void setJaJogou() {
+        jaJogou = !jaJogou;
     }
 
-    public boolean isTirouPeca() {
-        return tirouPeca;
+    public boolean isJaJogou() {
+        return jaJogou;
     }
 }

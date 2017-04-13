@@ -94,7 +94,10 @@ public class IndexService {
         new Thread(() -> {
             while (true) {
                 mensagemRecebida = comunicacao.recebePacote();
-                if (mensagemRecebida.matches("^movimento:\\d:\\d+:\\d+$")) {
+                if (mensagemRecebida.matches("^andar:\\d:\\d+:\\d+$")) {
+                    String[] mensagem = mensagemRecebida.split(":");
+                    casas.get(Integer.parseInt(mensagem[2])).removerPeca();
+                    casas.get(Integer.parseInt(mensagem[3])).colocarPeca(Integer.parseInt(mensagem[1]));
 
                 } else if (mensagemRecebida.matches("^colocar:\\d:\\d+$")) {
                     String[] mensagem = mensagemRecebida.split(":");
@@ -127,7 +130,8 @@ public class IndexService {
 
     public void colocarPeca(CasaLayout casa) {
         if (tabuleiroJogo.getTurnoJogador() == jogador) {
-            if (casa.getCasa().getPeca().getJogador() == 0 && tabuleiroJogo.isEscolherCasa() && casa.verificarMovimento(posicaoInicial, casa.getCasa().getPosicao())) {
+
+            /*if (casa.getCasa().getPeca().getJogador() == 0 && tabuleiroJogo.isEscolherCasa() && casa.verificarMovimento(posicaoInicial, casa.getCasa().getPosicao())) {
                 if (posicaoInicial != -1) {
                     casas.get(posicaoInicial).removerPeca(tabuleiroJogo.getTurnoJogador());
                 }
@@ -140,18 +144,67 @@ public class IndexService {
                 tabuleiroJogo.setTirouPeca();
                 posicaoInicial = casa.getCasa().getPosicao();
                 //casa.removerPeca(tabuleiroJogo.getTurnoJogador());
-            }
+            }*/
+            //System.out.println("clicou");
+            verificarMovimento(posicaoInicial, casa.getCasa().getPosicao());
         }
     }
 
 
     public void removerPeca(Text numeroPecas) {
-        posicaoInicial = -1;
-        tabuleiroJogo.setTirouPeca();
-        tabuleiroJogo.setPecas();
-        tabuleiroJogo.setEscolherCasa();
-        numeroPecas.setText(tabuleiroJogo.getPecas() + " peças restantes");
+        if (tabuleiroJogo.getTurnoJogador() == jogador && !tabuleiroJogo.isEscolherCasa() && !tabuleiroJogo.isJaJogou()) {
+            tabuleiroJogo.setPecas();
+            posicaoInicial = -1;
+            tabuleiroJogo.setEscolherCasa();
+            numeroPecas.setText(tabuleiroJogo.getPecas() + " peças restantes");
+        }
+    }
 
+    public void verificarMovimento(int posicaoInicial, int posicaoFinal) {
+        if (posicaoInicial == -1 && tabuleiroJogo.isEscolherCasa() && !tabuleiroJogo.isJaJogou()) {
+            tabuleiroJogo.setJaJogou();
+            tabuleiroJogo.setEscolherCasa();
+            casas.get(posicaoFinal).colocarPeca(tabuleiroJogo.getTurnoJogador());
+            comunicacao.enviarPacote("colocar:" + jogador + ":" + posicaoFinal);
+            comunicacao.enviarPacote("pecasAdversarias:" + jogador + ":" + tabuleiroJogo.getPecas());
+        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == tabuleiroJogo.getTurnoJogador() && !tabuleiroJogo.isJaJogou()) {
+            this.posicaoInicial = posicaoFinal;
+            tabuleiroJogo.setEscolherCasa(true);
+            System.out.println("quero andar");
+        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == 0 && tabuleiroJogo.isEscolherCasa() && !tabuleiroJogo.isJaJogou()) {
+            verificarMovimentoAndar(posicaoInicial, posicaoFinal);
+            System.out.println("andou");
+        }
+    }
+
+    public void verificarMovimentoAndar(int posicaoInicial, int posicaoFinal) {
+
+        switch (posicaoFinal - posicaoInicial) {
+            case 1:
+                mover(posicaoInicial, posicaoFinal);
+                break;
+            case -1:
+                mover(posicaoInicial, posicaoFinal);
+                break;
+            case 6:
+                mover(posicaoInicial, posicaoFinal);
+                break;
+            case -6:
+                mover(posicaoInicial, posicaoFinal);
+                break;
+            default:
+                tabuleiroJogo.setEscolherCasa();
+                break;
+        }
+
+    }
+
+    public void mover(int posicaoInicial, int posicaoFinal) {
+        casas.get(posicaoInicial).removerPeca();
+        casas.get(posicaoFinal).colocarPeca(tabuleiroJogo.getTurnoJogador());
+        comunicacao.enviarPacote("andar:" + jogador + ":" + posicaoInicial + ":" + posicaoFinal);
+        //tabuleiroJogo.setEscolherCasa();
+        tabuleiroJogo.setJaJogou();
     }
 
     public Tabuleiro getTabuleiroJogo() {
