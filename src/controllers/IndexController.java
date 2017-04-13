@@ -7,9 +7,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import models.Comunicacao;
 import models.ComunicacaoTCP;
 import services.IndexService;
@@ -21,6 +23,9 @@ import java.util.ResourceBundle;
 
 
 public class IndexController implements Initializable {
+
+    @FXML
+    BorderPane janela;
 
     @FXML
     Pane tabuleiro;
@@ -51,6 +56,7 @@ public class IndexController implements Initializable {
         indexService.iniciarComunicacao();
         indexService.criarTabuleiro();
         indexService.iniciarThreadRecebePacotes();
+
     }
 
     @FXML
@@ -62,7 +68,7 @@ public class IndexController implements Initializable {
 
     @FXML
     public void passarTurno() {
-       indexService.passarTurno();
+        indexService.passarTurno();
     }
 
     @FXML

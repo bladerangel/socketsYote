@@ -56,4 +56,12 @@ public class ComunicacaoTCP {
 
     }
 
+    public void fecharConexao() {
+        try {
+            cliente.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
