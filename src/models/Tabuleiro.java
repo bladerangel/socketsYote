@@ -17,6 +17,7 @@ public class Tabuleiro {
             turnoJogador = jogadorAdversario;
         else
             turnoJogador = jogador;
+        turnoJogador.setRemoverOutraPeca(false);
     }
 
     public Jogador getTurnoJogador() {
