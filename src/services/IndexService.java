@@ -33,7 +33,6 @@ public class IndexService {
     private Tabuleiro tabuleiroJogo;
     private ComunicacaoTCP comunicacao;
     private String mensagemRecebida;
-    private int posicaoInicial;
 
     public IndexService(Pane tabuleiro, Text numeroJogador, TextArea chat, TextField escrever, Text turnoAtual, Text numeroPecasAdversarias, Button removerPeca, Text numeroPecas, Button passarTurno) {
         this.tabuleiro = tabuleiro;
@@ -124,7 +123,7 @@ public class IndexService {
     }
 
     public void selecionarPecaTabuleiro(int posicaoFinal) {
-        this.posicaoInicial = posicaoFinal;
+        tabuleiroJogo.setPosicaoInicial(posicaoFinal);
     }
 
     public void passarTurno(boolean enviarPacote) {
@@ -142,7 +141,7 @@ public class IndexService {
 
     public void movimentarPecaTabuleiro(CasaLayout casa) {
         if (tabuleiroJogo.getTurnoJogador() == tabuleiroJogo.getJogador()) {
-            verificarMovimento(posicaoInicial, casa.getCasa().getPosicao());
+            verificarMovimento(tabuleiroJogo.getPosicaoInicial(), casa.getCasa().getPosicao());
         }
     }
 
@@ -151,10 +150,10 @@ public class IndexService {
             adicionarPecaTabuleiro(posicaoFinal, true);
         } else if (casas.get(posicaoFinal).getCasa().getPeca().getTipo() == tabuleiroJogo.getTurnoJogador().getTipo()) { //escolher peça
             selecionarPecaTabuleiro(posicaoFinal);
-        } else if (!removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
+        } else if (!removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
             verificarMovimentoAndar(posicaoInicial, posicaoFinal);
             verificaCaptura(posicaoInicial, posicaoFinal);
-        } else if (casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != posicaoFinal && !tabuleiroJogo.getTurnoJogador().isRemoverOutraPeca()) {//capturar multipla peças
+        } else if (casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal && !tabuleiroJogo.getTurnoJogador().isRemoverOutraPeca()) {//capturar multipla peças
             verificaCaptura(posicaoInicial, posicaoFinal);
         } else if (tabuleiroJogo.getTurnoJogador().isRemoverOutraPeca()) {//remover peça ao realizar a captura multipla
             removerOutraPeca(posicaoFinal, true);
