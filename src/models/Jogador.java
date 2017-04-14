@@ -13,6 +13,7 @@ public class Jogador {
         this.tipo = tipo;
         this.quantidadePecasForaTabuleiro = quantidadePecasForaTabuleiro;
         this.quantidadePecasDentroTabuleiro = quantidadePecasDentroTabuleiro;
+        removerOutraPeca = false;
     }
 
     public void setTipo(int tipo) {
@@ -24,8 +25,10 @@ public class Jogador {
     }
 
     public void removerPecasForaTabuleiro() {
-        quantidadePecasForaTabuleiro--;
-        quantidadePecasDentroTabuleiro++;
+        if (quantidadePecasForaTabuleiro > 0) {
+            quantidadePecasForaTabuleiro--;
+            quantidadePecasDentroTabuleiro++;
+        }
     }
 
     public void removerPecasDentroTabuleiro() {
@@ -34,10 +37,6 @@ public class Jogador {
 
     public int totalPecas() {
         return quantidadePecasForaTabuleiro + quantidadePecasDentroTabuleiro;
-    }
-
-    public int getQuantidadePecasDentroTabuleiro() {
-        return quantidadePecasDentroTabuleiro;
     }
 
     public int getQuantidadePecasForaTabuleiro() {
@@ -51,4 +50,5 @@ public class Jogador {
     public boolean isRemoverOutraPeca() {
         return removerOutraPeca;
     }
+
 }

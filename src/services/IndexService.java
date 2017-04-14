@@ -1,19 +1,21 @@
 package services;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import models.CasaLayout;
 import models.ComunicacaoTCP;
 import models.Jogador;
 import models.Tabuleiro;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class IndexService {
 
@@ -64,22 +66,22 @@ public class IndexService {
             }
         }
         numeroJogador.setText("Você: Jogador " + tabuleiroJogo.getJogador().getTipo());
+        numeroPecas.setText(tabuleiroJogo.getJogador().getQuantidadePecasForaTabuleiro() + " peças restantes - " + tabuleiroJogo.getJogador().totalPecas() + " no total");
+        numeroPecasAdversarias.setText(tabuleiroJogo.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes - " + tabuleiroJogo.getJogadorAdversario().totalPecas() + " no total");
     }
 
     public void iniciarComunicacao() {
+        Jogador jogador = new Jogador(1, 2, 0);
+        Jogador jogadorAdversario = new Jogador(2, 3, 0);
         try {
             comunicacao = new ComunicacaoTCP();
             comunicacao.iniciarServidor(9999);
             comunicacao.esperandoConexao();
-            Jogador jogador = new Jogador(1, 12, 0);
-            Jogador jogadorAdversario = new Jogador(2, 12, 0);
             criarTabuleiro(jogador, jogadorAdversario, jogador);
         } catch (IOException e) {
             try {
                 comunicacao.iniciarCliente(9999);
-                Jogador jogador = new Jogador(2, 12, 0);
-                Jogador jogadorAdversario = new Jogador(1, 12, 0);
-                criarTabuleiro(jogador, jogadorAdversario, jogadorAdversario);
+                criarTabuleiro(jogadorAdversario, jogador, jogador);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -102,23 +104,22 @@ public class IndexService {
     }
 
     public void removerPeca(boolean enviarPacote) {
-        tabuleiroJogo.getTurnoJogador().removerPecasForaTabuleiro();
         adicionarMensagemChat("O jogador " + tabuleiroJogo.getTurnoJogador().getTipo() + " tirou 1 peça");
         if (enviarPacote) {
-            numeroPecas.setText(tabuleiroJogo.getTurnoJogador().getQuantidadePecasForaTabuleiro() + " peças restantes - " + tabuleiroJogo.getTurnoJogador().totalPecas() + " no total");
             removerPeca.setDisable(true);
             comunicacao.enviarPacote("removerPeca");
-        } else {
-            numeroPecasAdversarias.setText(tabuleiroJogo.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes - " + tabuleiroJogo.getJogadorAdversario().totalPecas() + " no total");
         }
-
     }
 
     public void adicionarPecaTabuleiro(int posicao, boolean enviarPacote) {
+        tabuleiroJogo.getTurnoJogador().removerPecasForaTabuleiro();
         casas.get(posicao).colocarPeca(tabuleiroJogo.getTurnoJogador());
         if (enviarPacote) {
+            numeroPecas.setText(tabuleiroJogo.getTurnoJogador().getQuantidadePecasForaTabuleiro() + " peças restantes - " + tabuleiroJogo.getTurnoJogador().totalPecas() + " no total");
             comunicacao.enviarPacote("adicionarPecaTabuleiro:" + posicao);
             passarTurno(true);
+        } else {
+            numeroPecasAdversarias.setText(tabuleiroJogo.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes - " + tabuleiroJogo.getJogadorAdversario().totalPecas() + " no total");
         }
     }
 
@@ -135,7 +136,8 @@ public class IndexService {
             removerPeca.setDisable(true);
             passarTurno.setDisable(true);
         } else {
-            removerPeca.setDisable(false);
+            if (tabuleiroJogo.getTurnoJogador().getQuantidadePecasForaTabuleiro() > 0)
+                removerPeca.setDisable(false);
         }
     }
 
@@ -145,17 +147,29 @@ public class IndexService {
         }
     }
 
+
+    public void verificarVencedor(boolean enviarPacote) {
+        if (enviarPacote) {
+            if (tabuleiroJogo.getJogadorAdversario().totalPecas() == 0) {
+                JOptionPane.showMessageDialog(null, "Você ganhou a partida!");
+                comunicacao.enviarPacote("perdeuJogo");
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Você perdeu a partida!");
+        }
+    }
+
     public void verificarMovimento(int posicaoInicial, int posicaoFinal) {
-        if (removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && passarTurno.isDisable()) { //adicionar Peça tabuleiro
+        if (removerPeca.isDisable() && passarTurno.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && tabuleiroJogo.getTurnoJogador().getQuantidadePecasForaTabuleiro() > 0) { //adicionar Peça tabuleiro
             adicionarPecaTabuleiro(posicaoFinal, true);
-        } else if (!removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == tabuleiroJogo.getTurnoJogador().getTipo()) { //escolher peça
+        } else if (passarTurno.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == tabuleiroJogo.getTurnoJogador().getTipo()) { //escolher peça
             selecionarPecaTabuleiro(posicaoFinal);
-        } else if (!removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
+        } else if (passarTurno.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
             verificarMovimentoAndar(posicaoInicial, posicaoFinal);
             verificaCaptura(posicaoInicial, posicaoFinal);
-        } else if (casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal && !tabuleiroJogo.getTurnoJogador().isRemoverOutraPeca()) {//capturar multipla peças
+        } else if (!passarTurno.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal && !tabuleiroJogo.getTurnoJogador().isRemoverOutraPeca()) {//capturar multipla peças
             verificaCaptura(posicaoInicial, posicaoFinal);
-        } else if (tabuleiroJogo.getTurnoJogador().isRemoverOutraPeca()) {//remover peça ao realizar a captura multipla
+        } else if (!passarTurno.isDisable() && tabuleiroJogo.getTurnoJogador().isRemoverOutraPeca()) {//remover peça ao realizar a captura multipla
             removerOutraPeca(posicaoFinal, true);
         }
     }
@@ -228,6 +242,7 @@ public class IndexService {
                 removerPeca.setDisable(true);
                 passarTurno.setDisable(false);
                 comunicacao.enviarPacote("capturarPeca:" + posicaoInicial + ":" + posicaoFinal + ":" + posicaoVerificar);
+                verificarVencedor(true);
             } else {
                 tabuleiroJogo.getJogador().removerPecasDentroTabuleiro();
                 casas.get(posicaoVerificar).removerPeca(tabuleiroJogo.getJogador());
@@ -246,6 +261,7 @@ public class IndexService {
                 tabuleiroJogo.getJogadorAdversario().removerPecasDentroTabuleiro();
                 numeroPecasAdversarias.setText(tabuleiroJogo.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes - " + tabuleiroJogo.getJogadorAdversario().totalPecas() + " no total");
                 comunicacao.enviarPacote("removerOutraPeca:" + posicao);
+                verificarVencedor(true);
             } else {
                 tabuleiroJogo.getJogador().removerPecasDentroTabuleiro();
                 casas.get(posicao).removerPeca(tabuleiroJogo.getJogador());
@@ -273,6 +289,8 @@ public class IndexService {
                     passarTurno(false);
                 } else if (mensagemRecebida.matches("^removerPeca")) {
                     removerPeca(false);
+                } else if (mensagemRecebida.matches("^perdeuJogo")) {
+                    verificarVencedor(false);
                 } else if (mensagemRecebida.matches("^reiniciar$")) {
 
                 } else if (mensagemRecebida.matches("^desistir$")) {
