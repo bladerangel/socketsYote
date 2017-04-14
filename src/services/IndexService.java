@@ -148,7 +148,7 @@ public class IndexService {
     public void verificarMovimento(int posicaoInicial, int posicaoFinal) {
         if (removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && passarTurno.isDisable()) { //adicionar Peça tabuleiro
             adicionarPecaTabuleiro(posicaoFinal, true);
-        } else if (casas.get(posicaoFinal).getCasa().getPeca().getTipo() == tabuleiroJogo.getTurnoJogador().getTipo()) { //escolher peça
+        } else if (!removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == tabuleiroJogo.getTurnoJogador().getTipo()) { //escolher peça
             selecionarPecaTabuleiro(posicaoFinal);
         } else if (!removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
             verificarMovimentoAndar(posicaoInicial, posicaoFinal);
@@ -220,6 +220,7 @@ public class IndexService {
             casas.get(posicaoFinal).colocarPeca(tabuleiroJogo.getTurnoJogador());
             tabuleiroJogo.getTurnoJogador().setRemoverOutraPeca(true);
             adicionarMensagemChat("O jogador " + tabuleiroJogo.getTurnoJogador().getTipo() + " capturou a peça da casa " + posicaoVerificar);
+            selecionarPecaTabuleiro(posicaoFinal);
             if (enviarPacote) {
                 tabuleiroJogo.getJogadorAdversario().removerPecasDentroTabuleiro();
                 numeroPecasAdversarias.setText(tabuleiroJogo.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes - " + tabuleiroJogo.getJogadorAdversario().totalPecas() + " no total");
