@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import models.CasaLayout;
 import models.ComunicacaoTCP;
+import models.Jogador;
 import models.Tabuleiro;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class IndexService {
     private ArrayList<CasaLayout> casas;
     private Tabuleiro tabuleiroJogo;
     private ComunicacaoTCP comunicacao;
-    private int jogador;
+    private Jogador jogador;
     private String mensagemRecebida;
     private Pane tabuleiro;
     private Text numeroJogador;
@@ -63,7 +64,7 @@ public class IndexService {
                 casa.getCasa().setPosicao(casas.size() - 1);
             }
         }
-        numeroJogador.setText("Você: Jogador " + jogador);
+        numeroJogador.setText("Você: Jogador " + jogador.getTipo());
     }
 
     public void iniciarComunicacao() {
@@ -71,11 +72,11 @@ public class IndexService {
             comunicacao = new ComunicacaoTCP();
             comunicacao.iniciarServidor(9999);
             comunicacao.esperandoConexao();
-            jogador = 1;
+            jogador = new Jogador(1, 12);
         } catch (IOException e) {
             try {
                 comunicacao.iniciarCliente(9999);
-                jogador = 2;
+                jogador = new Jogador(2, 12);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -139,20 +140,20 @@ public class IndexService {
     }
 
     public void movimentarPecaTabuleiro(CasaLayout casa) {
-        if (tabuleiroJogo.getTurnoJogador() == jogador) {
+        if (tabuleiroJogo.getTurnoJogador() == jogador.getTipo()) {
             verificarMovimento(posicaoInicial, casa.getCasa().getPosicao());
         }
     }
 
     public void verificarMovimento(int posicaoInicial, int posicaoFinal) {
-        if (removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getJogador() == 0 && passarTurno.isDisable()) { //adicionar Peça tabuleiro
+        if (removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && passarTurno.isDisable()) { //adicionar Peça tabuleiro
             adicionarPecaTabuleiro(posicaoFinal, true);
-        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == tabuleiroJogo.getTurnoJogador()) { //escolher peça
+        } else if (casas.get(posicaoFinal).getCasa().getPeca().getTipo() == tabuleiroJogo.getTurnoJogador()) { //escolher peça
             selecionarPecaTabuleiro(posicaoFinal);
-        } else if (!removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getJogador() == 0 && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
+        } else if (!removerPeca.isDisable() && casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
             verificarMovimentoAndar(posicaoInicial, posicaoFinal);
             verificaCaptura(posicaoInicial, posicaoFinal);
-        } else if (casas.get(posicaoFinal).getCasa().getPeca().getJogador() == 0 && posicaoInicial != posicaoFinal && !tabuleiroJogo.isRemoverOutraPeca()) {//capturar multipla peças
+        } else if (casas.get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != posicaoFinal && !tabuleiroJogo.isRemoverOutraPeca()) {//capturar multipla peças
             verificaCaptura(posicaoInicial, posicaoFinal);
         } else if (tabuleiroJogo.isRemoverOutraPeca()) {//remover peça ao realizar a captura multipla
             removerOutraPeca(posicaoFinal, true);
@@ -212,7 +213,7 @@ public class IndexService {
     }
 
     public void capturarPeca(int posicaoInicial, int posicaoFinal, int posicaoVerificar, boolean enviarPacote) {
-        int peca = casas.get(posicaoVerificar).getCasa().getPeca().getJogador();
+        int peca = casas.get(posicaoVerificar).getCasa().getPeca().getTipo();
         if (peca != tabuleiroJogo.getTurnoJogador() && peca != 0) {
             casas.get(posicaoInicial).removerPeca(tabuleiroJogo.getTurnoJogador());
             casas.get(posicaoVerificar).removerPeca(peca);
@@ -228,7 +229,7 @@ public class IndexService {
     }
 
     public void removerOutraPeca(int posicao, boolean enviarPacote) {
-        int peca = casas.get(posicao).getCasa().getPeca().getJogador();
+        int peca = casas.get(posicao).getCasa().getPeca().getTipo();
         if (peca != tabuleiroJogo.getTurnoJogador() && peca != 0) {
             casas.get(posicao).removerPeca(peca);
             tabuleiroJogo.setRemoverOutraPeca(false);

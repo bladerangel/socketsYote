@@ -13,7 +13,7 @@ public class CasaLayout extends Button {
     }
 
     public void colocarPeca(int jogador) {
-        casa.getPeca().setJogador(jogador);
+        casa.getPeca().setTipo(jogador);
         if (jogador == 1)
             getStyleClass().add("imagemPeca");
         else
@@ -21,7 +21,7 @@ public class CasaLayout extends Button {
     }
 
     public void removerPeca(int jogador) {
-        casa.getPeca().setJogador(0);
+        casa.getPeca().setTipo(0);
         if (jogador == 1)
             getStyleClass().remove("imagemPeca");
         else

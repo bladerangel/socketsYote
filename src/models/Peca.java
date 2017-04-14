@@ -1,21 +1,18 @@
 package models;
 
-/**
- * Created by Rangel on 11/04/2017.
- */
 public class Peca {
 
-    private int jogador;
+    private int tipo;
 
     public Peca() {
-        jogador = 0;
+        tipo = 0;
     }
 
-    public void setJogador(int jogador) {
-        this.jogador = jogador;
+    public void setTipo(int tipo) {
+        this.tipo = tipo;
     }
 
-    public int getJogador() {
-        return jogador;
+    public int getTipo() {
+        return tipo;
     }
 }
