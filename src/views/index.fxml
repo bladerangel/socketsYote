@@ -30,7 +30,7 @@
                               <Image url="@imagens/pecas.png" />
                            </image>
                         </ImageView>
-                        <Text fx:id="numeroPecasAdversarias" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: red;" text="12 peças adversarias restantes">
+                        <Text fx:id="numeroPecasAdversarias" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: red;" text="12 peças adversarias restantes - 12 no total">
                            <font>
                               <Font name="System Bold Italic" size="14.0" />
                            </font>
@@ -52,7 +52,7 @@
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Button>
-                        <Text fx:id="numeroPecas" strokeType="OUTSIDE" strokeWidth="0.0" text="12 peças restantes">
+                        <Text fx:id="numeroPecas" strokeType="OUTSIDE" strokeWidth="0.0" text="12 peças restantes - 12 no total">
                            <font>
                               <Font name="System Bold Italic" size="14.0" />
                            </font>

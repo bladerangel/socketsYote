@@ -2,50 +2,32 @@ package models;
 
 public class Tabuleiro {
 
-    private int pecas;
-    private int pecasAdversarias;
-    private int turnoJogador;
-    private boolean removerOutraPeca;
+    private Jogador jogador;
+    private Jogador jogadorAdversario;
+    private Jogador turnoJogador;
 
-    public Tabuleiro() {
-        removerOutraPeca = false;
-        turnoJogador = 1;
-        pecas = 12;
-        pecasAdversarias = 12;
+    public Tabuleiro(Jogador jogador, Jogador jogadorAdversario, Jogador turnoJogador) {
+        this.jogador = jogador;
+        this.jogadorAdversario = jogadorAdversario;
+        this.turnoJogador = turnoJogador;
     }
 
-    public void setTurnoJogador() {
-        if (turnoJogador == 1)
-            turnoJogador = 2;
+    public void mudarTurnoJogador() {
+        if (turnoJogador == jogador)
+            turnoJogador = jogadorAdversario;
         else
-            turnoJogador = 1;
-        removerOutraPeca = false;
+            turnoJogador = jogador;
     }
 
-    public int getTurnoJogador() {
+    public Jogador getTurnoJogador() {
         return turnoJogador;
     }
 
-    public void setPecas() {
-        if (turnoJogador == 1)
-            pecas--;
-        else
-            pecasAdversarias--;
+    public Jogador getJogador() {
+        return jogador;
     }
 
-    public int getPecas() {
-        if (turnoJogador == 1)
-            return pecas;
-        else
-            return pecasAdversarias;
+    public Jogador getJogadorAdversario() {
+        return jogadorAdversario;
     }
-
-    public void setRemoverOutraPeca(boolean removerOutraPeca) {
-        this.removerOutraPeca = removerOutraPeca;
-    }
-
-    public boolean isRemoverOutraPeca() {
-        return removerOutraPeca;
-    }
-
 }

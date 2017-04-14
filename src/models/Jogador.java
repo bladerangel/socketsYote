@@ -4,11 +4,15 @@ package models;
 public class Jogador {
 
     private int tipo;
-    private int quantidadePecas;
+    private int quantidadePecasForaTabuleiro;
+    private int quantidadePecasDentroTabuleiro;
+    private boolean removerOutraPeca;
 
-    public Jogador(int tipo, int quantidadePecas) {
+
+    public Jogador(int tipo, int quantidadePecasForaTabuleiro, int quantidadePecasDentroTabuleiro) {
         this.tipo = tipo;
-        this.quantidadePecas = quantidadePecas;
+        this.quantidadePecasForaTabuleiro = quantidadePecasForaTabuleiro;
+        this.quantidadePecasDentroTabuleiro = quantidadePecasDentroTabuleiro;
     }
 
     public void setTipo(int tipo) {
@@ -19,11 +23,32 @@ public class Jogador {
         return tipo;
     }
 
-    public void setQuantidadePecas(int quantidadePecas) {
-        this.quantidadePecas = quantidadePecas;
+    public void removerPecasForaTabuleiro() {
+        quantidadePecasForaTabuleiro--;
+        quantidadePecasDentroTabuleiro++;
     }
 
-    public int getQuantidadePecas() {
-        return quantidadePecas;
+    public void removerPecasDentroTabuleiro() {
+        quantidadePecasDentroTabuleiro--;
+    }
+
+    public int totalPecas() {
+        return quantidadePecasForaTabuleiro + quantidadePecasDentroTabuleiro;
+    }
+
+    public int getQuantidadePecasDentroTabuleiro() {
+        return quantidadePecasDentroTabuleiro;
+    }
+
+    public int getQuantidadePecasForaTabuleiro() {
+        return quantidadePecasForaTabuleiro;
+    }
+
+    public void setRemoverOutraPeca(boolean removerOutraPeca) {
+        this.removerOutraPeca = removerOutraPeca;
+    }
+
+    public boolean isRemoverOutraPeca() {
+        return removerOutraPeca;
     }
 }

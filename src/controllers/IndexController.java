@@ -60,14 +60,13 @@ public class IndexController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         indexService = new IndexService(tabuleiro, numeroJogador, chat, escrever, turno, numeroPecasAdversarias, removerPeca,numeroPecas, passarTurno);
         indexService.iniciarComunicacao();
-        indexService.criarTabuleiro();
         indexService.iniciarThreadRecebePacotes();
 
     }
 
     @FXML
     public void removerPeca() {
-        indexService.removerPeca();
+        indexService.removerPeca(true);
     }
 
     @FXML
