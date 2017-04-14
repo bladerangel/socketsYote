@@ -61,7 +61,6 @@ public class IndexController implements Initializable {
         indexService = new IndexService(tabuleiro, numeroJogador, chat, escrever, turno, numeroPecasAdversarias, removerPeca,numeroPecas, passarTurno);
         indexService.iniciarComunicacao();
         indexService.iniciarThreadRecebePacotes();
-
     }
 
     @FXML
@@ -74,6 +73,10 @@ public class IndexController implements Initializable {
         indexService.passarTurno(true);
     }
 
+    @FXML
+    private void desistir(){
+        indexService.desistirPartida();
+    }
     @FXML
     public void limpar() {
         escrever.clear();

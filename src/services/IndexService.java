@@ -1,5 +1,6 @@
 package services;
 
+import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -49,6 +50,7 @@ public class IndexService {
     }
 
     public void criarTabuleiro(Jogador jogador, Jogador jogadorAdversario, Jogador turnoJogador) {
+        System.out.println("entrou aki");
         tabuleiroJogo = new Tabuleiro(jogador, jogadorAdversario, turnoJogador);
         casas = new ArrayList<CasaLayout>();
         linhasTabuleiro = new VBox();
@@ -65,23 +67,42 @@ public class IndexService {
                 casa.getCasa().setPosicao(casas.size() - 1);
             }
         }
+
+        if (tabuleiroJogo.getTurnoJogador() == tabuleiroJogo.getJogador())
+            removerPeca.setDisable(false);
+        else
+            removerPeca.setDisable(true);
+        passarTurno.setDisable(true);
         numeroJogador.setText("Você: Jogador " + tabuleiroJogo.getJogador().getTipo());
         numeroPecas.setText(tabuleiroJogo.getJogador().getQuantidadePecasForaTabuleiro() + " peças restantes - " + tabuleiroJogo.getJogador().totalPecas() + " no total");
         numeroPecasAdversarias.setText(tabuleiroJogo.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes - " + tabuleiroJogo.getJogadorAdversario().totalPecas() + " no total");
     }
 
-    public void iniciarComunicacao() {
+    public void iniciarNovoJogo(boolean servidor) {
         Jogador jogador = new Jogador(1, 2, 0);
-        Jogador jogadorAdversario = new Jogador(2, 3, 0);
+        Jogador jogadorAdversario = new Jogador(2, 1, 0);
+        if (servidor)
+            Platform.runLater(() -> {
+                criarTabuleiro(jogador, jogadorAdversario, jogador);
+            });
+
+        else
+            Platform.runLater(() -> {
+                criarTabuleiro(jogadorAdversario, jogador, jogador);
+            });
+    }
+
+    public void iniciarComunicacao() {
         try {
+
             comunicacao = new ComunicacaoTCP();
             comunicacao.iniciarServidor(9999);
             comunicacao.esperandoConexao();
-            criarTabuleiro(jogador, jogadorAdversario, jogador);
+            iniciarNovoJogo(true);
         } catch (IOException e) {
             try {
+                iniciarNovoJogo(false);
                 comunicacao.iniciarCliente(9999);
-                criarTabuleiro(jogadorAdversario, jogador, jogador);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -147,15 +168,65 @@ public class IndexService {
         }
     }
 
+    public void janelaAlerta(String titulo, String cabecalho, String conteudo) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(titulo);
+            alert.setHeaderText(cabecalho);
+            alert.setContentText(conteudo);
+            alert.showAndWait();
+        });
+    }
+
+    public void reiniciarJogo() {
+        adicionarMensagemChat("O jogo foi reiniciado!");
+        if (tabuleiroJogo.getJogador().getTipo() == 1) {
+            iniciarNovoJogo(true);
+        } else {
+            iniciarNovoJogo(false);
+        }
+    }
+
+    public void desistirPartida() {
+        adicionarMensagemChat("O jogador " + tabuleiroJogo.getJogador().getTipo() + " desistiu da partida!");
+        comunicacao.enviarPacote("desistirJogo:" + tabuleiroJogo.getJogador().getTipo());
+        reiniciarJogo();
+        comunicacao.enviarPacote("reiniciarJogo");
+    }
+
+    public void recebePacoteDesistirPartida(String jogador) {
+        adicionarMensagemChat("O jogador " + jogador + " desistiu da partida!");
+    }
+
 
     public void verificarVencedor(boolean enviarPacote) {
         if (enviarPacote) {
             if (tabuleiroJogo.getJogadorAdversario().totalPecas() == 0) {
-                JOptionPane.showMessageDialog(null, "Você ganhou a partida!");
-                comunicacao.enviarPacote("perdeuJogo");
+                janelaAlerta("Resultado da partida", null, "Você ganhou a partida!");
+                adicionarMensagemChat("O jogador " + tabuleiroJogo.getTurnoJogador().getTipo() + " ganhou a partida!");
+                comunicacao.enviarPacote("ganhouJogo");
+                reiniciarJogo();
+                comunicacao.enviarPacote("reiniciarJogo");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Você perdeu a partida!");
+            adicionarMensagemChat("O jogador " + tabuleiroJogo.getTurnoJogador().getTipo() + " ganhou a partida!");
+            janelaAlerta("Resultado da partida", null, "Você perdeu a partida!");
+        }
+
+    }
+
+    public void verificarEmpate(boolean enviarPacote) {
+        if (enviarPacote) {
+            if (tabuleiroJogo.getTurnoJogador().totalPecas() <= 3 && tabuleiroJogo.getJogadorAdversario().totalPecas() <= 3) {
+                janelaAlerta("Resultado da partida", null, "Deu empate!");
+                adicionarMensagemChat("O partida terminou em empate");
+                comunicacao.enviarPacote("empateJogo");
+                reiniciarJogo();
+                comunicacao.enviarPacote("reiniciarJogo");
+            }
+        } else {
+            adicionarMensagemChat("O partida terminou em empate");
+            janelaAlerta("Resultado da partida", null, "Deu empate!");
         }
     }
 
@@ -241,8 +312,10 @@ public class IndexService {
                 casas.get(posicaoVerificar).removerPeca(tabuleiroJogo.getJogadorAdversario());
                 removerPeca.setDisable(true);
                 passarTurno.setDisable(false);
-                comunicacao.enviarPacote("capturarPeca:" + posicaoInicial + ":" + posicaoFinal + ":" + posicaoVerificar);
+                verificarEmpate(true);
                 verificarVencedor(true);
+                comunicacao.enviarPacote("capturarPeca:" + posicaoInicial + ":" + posicaoFinal + ":" + posicaoVerificar);
+
             } else {
                 tabuleiroJogo.getJogador().removerPecasDentroTabuleiro();
                 casas.get(posicaoVerificar).removerPeca(tabuleiroJogo.getJogador());
@@ -260,8 +333,9 @@ public class IndexService {
                 casas.get(posicao).removerPeca(tabuleiroJogo.getJogadorAdversario());
                 tabuleiroJogo.getJogadorAdversario().removerPecasDentroTabuleiro();
                 numeroPecasAdversarias.setText(tabuleiroJogo.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes - " + tabuleiroJogo.getJogadorAdversario().totalPecas() + " no total");
-                comunicacao.enviarPacote("removerOutraPeca:" + posicao);
+                verificarEmpate(true);
                 verificarVencedor(true);
+                comunicacao.enviarPacote("removerOutraPeca:" + posicao);
             } else {
                 tabuleiroJogo.getJogador().removerPecasDentroTabuleiro();
                 casas.get(posicao).removerPeca(tabuleiroJogo.getJogador());
@@ -287,14 +361,16 @@ public class IndexService {
                     removerOutraPeca(Integer.parseInt(mensagemRecebida.split(":")[1]), false);
                 } else if (mensagemRecebida.matches("^passarTurno$")) {
                     passarTurno(false);
-                } else if (mensagemRecebida.matches("^removerPeca")) {
+                } else if (mensagemRecebida.matches("^removerPeca$")) {
                     removerPeca(false);
-                } else if (mensagemRecebida.matches("^perdeuJogo")) {
+                } else if (mensagemRecebida.matches("^ganhouJogo")) {
                     verificarVencedor(false);
-                } else if (mensagemRecebida.matches("^reiniciar$")) {
-
-                } else if (mensagemRecebida.matches("^desistir$")) {
-
+                } else if (mensagemRecebida.matches("^empateJogo$")) {
+                    verificarEmpate(false);
+                } else if (mensagemRecebida.matches("^reiniciarJogo$")) {
+                    reiniciarJogo();
+                } else if (mensagemRecebida.matches("^desistirJogo:\\d$")) {
+                    recebePacoteDesistirPartida(mensagemRecebida.split(":")[1]);
                 } else {
                     chat.appendText(mensagemRecebida + "\n");
                 }
