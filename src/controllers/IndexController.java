@@ -47,7 +47,6 @@ public class IndexController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         indexService = new IndexService(tabuleiroPane, numeroPecas, numeroPecasAdversarias, tipoJogador, turnoAtual, escreverMensagem, chat, pegarPeca, passarTurno);
-        indexService.iniciarJogo();
     }
 
     @FXML
