@@ -1,6 +1,6 @@
 package utils;
 
-import controllers.IndexController;
+import modulos.main.controladores.MainControlador;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -14,7 +14,7 @@ public class CarregarView {
     private Scene cena;
 
     public CarregarView(String view) throws IOException {
-        fxmlLoader = new FXMLLoader(getClass().getResource("/views/" + view + ".fxml"));
+        fxmlLoader = new FXMLLoader(getClass().getResource("/modulos/main/visoes/" + view + ".fxml"));
     }
 
     public void setEstagio(Stage estagio) {
@@ -31,8 +31,8 @@ public class CarregarView {
     }
 
     public void sairPartida() {
-        IndexController indexController = (IndexController) fxmlLoader.getController();
-        estagio.setOnCloseRequest(event -> indexController.sairPartida());
+        MainControlador mainControlador = (MainControlador) fxmlLoader.getController();
+        estagio.setOnCloseRequest(event -> mainControlador.sairPartida());
     }
 
     public void show() {
