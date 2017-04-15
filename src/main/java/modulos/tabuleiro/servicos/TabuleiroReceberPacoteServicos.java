@@ -14,7 +14,7 @@ public class TabuleiroReceberPacoteServicos {
     }
 
     public void receberPacoteIniciarPartida() {
-        janelaAlerta.janelaAlertaRunLater("Iniciar Partida", null, "O jogador 2 se conectou!");
+        tabuleiroServico.getChatServico().adicionarMensagemChat("O jogador 2 conectou-se!");
     }
 
     public void receberPacoteMensagemChat(int jogador, String mensagem) {

@@ -14,7 +14,7 @@ public class CarregarView {
     private Scene cena;
 
     public CarregarView(String view) throws IOException {
-        fxmlLoader = new FXMLLoader(getClass().getResource("/modulos/main/visoes/" + view + ".fxml"));
+        fxmlLoader = new FXMLLoader(getClass().getResource("/" + view + ".fxml"));
     }
 
     public void setEstagio(Stage estagio) {
