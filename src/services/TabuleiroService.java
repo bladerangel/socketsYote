@@ -51,7 +51,7 @@ public class TabuleiroService {
         jogadorAdversario = new Jogador(2, 12, 0);
     }
 
-    public void iniciarNovoJogo(boolean servidor) {
+    public void iniciarPartida(boolean servidor) {
         iniciarJogadorers();
         if (servidor) {
             criarTabuleiro(jogador, jogadorAdversario, jogador);
