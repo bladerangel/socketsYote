@@ -1,13 +1,21 @@
 package services;
 
+import utils.JanelaAlerta;
+
 public class TabuleiroReceberPacoteService {
 
 
     private TabuleiroService tabuleiroService;
+    private JanelaAlerta janelaAlerta;
 
-    public TabuleiroReceberPacoteService(TabuleiroService tabuleiroService) {
+    public TabuleiroReceberPacoteService(JanelaAlerta janelaAlerta, TabuleiroService tabuleiroService) {
+        this.janelaAlerta = janelaAlerta;
         this.tabuleiroService = tabuleiroService;
 
+    }
+
+    public void receberPacoteIniciarPartida() {
+        janelaAlerta.janelaAlertaRunLater("Iniciar Partida", null, "O jogador 2 se conectou!");
     }
 
     public void recebePacotePegarPeca() {
@@ -65,6 +73,7 @@ public class TabuleiroReceberPacoteService {
     }
 
     public void receberPacoteSairPartida(int jogador) {
+        janelaAlerta.janelaAlertaRunLater("Sair partida", null, "O jogador " + jogador + " saiu da partida!");
         tabuleiroService.getChatService().adicionarMensagemChat("O jogador " + jogador + " saiu da partida!");
         tabuleiroService.sairPartida();
     }
@@ -73,8 +82,10 @@ public class TabuleiroReceberPacoteService {
         new Thread(() -> {
             String mensagemRecebida;
             while (tabuleiroService.getComunicacaoService().getComunicacao().isConectado()) {
-                mensagemRecebida = tabuleiroService.getComunicacaoService().getComunicacao().recebePacote();
-                if (mensagemRecebida.matches("^pegarPeca$")) {
+                mensagemRecebida = tabuleiroService.getComunicacaoService().getComunicacao().receberPacote();
+                if (mensagemRecebida.matches("^iniciarPartida$")) {
+                    receberPacoteIniciarPartida();
+                } else if (mensagemRecebida.matches("^pegarPeca$")) {
                     recebePacotePegarPeca();
                 } else if (mensagemRecebida.matches("^passarTurno$")) {
                     receberPacotePassarTurno();

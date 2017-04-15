@@ -55,7 +55,7 @@ public class ComunicacaoTCP {
 
     }
 
-    public String recebePacote() {
+    public String receberPacote() {
         try {
             mensagem = in.readUTF();
             System.out.println("Mensagem Recebida: " + mensagem);

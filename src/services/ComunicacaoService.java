@@ -24,7 +24,6 @@ public class ComunicacaoService {
             servidor = true;
         } catch (IOException e) {
             try {
-                janelaAlerta.janelaAlertaRunLater("Iniciar Partida", null, "O jogador 2 se conectou!");
                 comunicacao.iniciarCliente(9999);
                 servidor = false;
             } catch (IOException e1) {

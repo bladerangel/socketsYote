@@ -22,9 +22,9 @@ public class IndexService {
         comunicacaoService.iniciarComunicacao();
         chatService = new ChatService(escreverMensagem, chat, comunicacaoService);
         tabuleiroService = new TabuleiroService(tabuleiroPane, numeroPecas, numeroPecasAdversarias, tipoJogador, turnoAtual, pegarPeca, passarTurno, janelaAlerta, chatService, comunicacaoService);
-        tabuleiroService.iniciarPartida(comunicacaoService.isServidor());
         tabuleiroEnviarPacoteService = new TabuleiroEnviarPacoteService(tabuleiroService);
-        tabuleiroReceberPacoteService = new TabuleiroReceberPacoteService(tabuleiroService);
+        tabuleiroEnviarPacoteService.enviarPacoteIniciarPartida(comunicacaoService.isServidor());
+        tabuleiroReceberPacoteService = new TabuleiroReceberPacoteService(janelaAlerta, tabuleiroService);
         tabuleiroReceberPacoteService.iniciarThreadRecebePacotes();
     }
 

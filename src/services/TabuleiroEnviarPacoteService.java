@@ -8,7 +8,22 @@ public class TabuleiroEnviarPacoteService {
 
     public TabuleiroEnviarPacoteService(TabuleiroService tabuleiroService) {
         this.tabuleiroService = tabuleiroService;
+    }
+
+    public void iniciarAcaoCasas() {
         tabuleiroService.getCasasTabuleiro().forEach(casa -> casa.setOnMouseClicked(event -> movimentarPeca((CasaBotao) event.getSource())));
+    }
+
+    public void enviarPacoteIniciarPartida(boolean servidor) {
+        tabuleiroService.iniciarJogadorers();
+        if (servidor) {
+            tabuleiroService.criarTabuleiro(tabuleiroService.getJogadorPadrao(), tabuleiroService.getJogadorAdversarioPadrao(), tabuleiroService.getJogadorPadrao());
+            iniciarAcaoCasas();
+        } else {
+            tabuleiroService.getComunicacaoService().getComunicacao().enviarPacote("iniciarPartida");
+            tabuleiroService.criarTabuleiro(tabuleiroService.getJogadorAdversarioPadrao(), tabuleiroService.getJogadorPadrao(), tabuleiroService.getJogadorPadrao());
+            iniciarAcaoCasas();
+        }
     }
 
     public void enviarPacotePegarPeca() {

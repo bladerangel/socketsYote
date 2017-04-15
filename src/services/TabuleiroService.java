@@ -29,8 +29,8 @@ public class TabuleiroService {
     private ChatService chatService;
     private ComunicacaoService comunicacaoService;
 
-    private Jogador jogador;
-    private Jogador jogadorAdversario;
+    private Jogador jogadorPadrao;
+    private Jogador jogadorAdversarioPadrao;
 
     public TabuleiroService(Pane tabuleiroPane, Text numeroPecas, Text numeroPecasAdversarias, Text tipoJogador, Text turnoAtual, Button pegarPeca, Button passarTurno, JanelaAlerta janelaAlerta, ChatService chatService, ComunicacaoService comunicacaoService) {
         this.tabuleiroPane = tabuleiroPane;
@@ -47,18 +47,10 @@ public class TabuleiroService {
     }
 
     public void iniciarJogadorers() {
-        jogador = new Jogador(1, 12, 0);
-        jogadorAdversario = new Jogador(2, 12, 0);
+        jogadorPadrao = new Jogador(1, 12, 0);
+        jogadorAdversarioPadrao = new Jogador(2, 12, 0);
     }
 
-    public void iniciarPartida(boolean servidor) {
-        iniciarJogadorers();
-        if (servidor) {
-            criarTabuleiro(jogador, jogadorAdversario, jogador);
-        } else {
-            criarTabuleiro(jogadorAdversario, jogador, jogador);
-        }
-    }
 
     public void iniciarTabuleiro(Jogador jogador, Jogador jogadorAdversario, Jogador turnoJogador) {
         casasTabuleiro.forEach(CasaBotao::resetarCasa);
@@ -171,9 +163,9 @@ public class TabuleiroService {
         chatService.adicionarMensagemChat("O jogo foi reiniciado!");
         iniciarJogadorers();
         if (tabuleiro.getJogador().getTipo() == 1) {
-            iniciarTabuleiro(jogador, jogadorAdversario, jogador);
+            iniciarTabuleiro(jogadorPadrao, jogadorAdversarioPadrao, jogadorPadrao);
         } else {
-            iniciarTabuleiro(jogadorAdversario, jogador, jogador);
+            iniciarTabuleiro(jogadorAdversarioPadrao, jogadorPadrao, jogadorPadrao);
         }
     }
 
@@ -207,5 +199,13 @@ public class TabuleiroService {
 
     public JanelaAlerta getJanelaAlerta() {
         return janelaAlerta;
+    }
+
+    public Jogador getJogadorPadrao() {
+        return jogadorPadrao;
+    }
+
+    public Jogador getJogadorAdversarioPadrao() {
+        return jogadorAdversarioPadrao;
     }
 }
