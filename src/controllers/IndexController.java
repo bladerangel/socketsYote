@@ -71,7 +71,7 @@ public class IndexController implements Initializable {
 
     @FXML
     public void enviarMensagem() {
-        indexService.getChatService().enviarPacoteMensagemChat();
+        indexService.getTabuleiroEnviarPacoteService().enviarPacoteMensagemChat();
     }
 
     public void sairPartida() {

@@ -5,9 +5,13 @@ import models.CasaBotao;
 public class TabuleiroEnviarPacoteService {
 
     private TabuleiroService tabuleiroService;
+    private ComunicacaoService comunicacaoService;
+    private ChatService chatService;
 
-    public TabuleiroEnviarPacoteService(TabuleiroService tabuleiroService) {
+    public TabuleiroEnviarPacoteService(TabuleiroService tabuleiroService, ComunicacaoService comunicacaoService, ChatService chatService) {
         this.tabuleiroService = tabuleiroService;
+        this.comunicacaoService = comunicacaoService;
+        this.chatService = chatService;
     }
 
     public void iniciarAcaoCasas() {
@@ -23,6 +27,14 @@ public class TabuleiroEnviarPacoteService {
             tabuleiroService.getComunicacaoService().getComunicacao().enviarPacote("iniciarPartida");
             tabuleiroService.criarTabuleiro(tabuleiroService.getJogadorAdversarioPadrao(), tabuleiroService.getJogadorPadrao(), tabuleiroService.getJogadorPadrao());
             iniciarAcaoCasas();
+        }
+    }
+
+    public void enviarPacoteMensagemChat() {
+        if (!chatService.getEscreverMensagem().getText().equals("")) {
+            comunicacaoService.getComunicacao().enviarPacote("jogadorDigitou:" + tabuleiroService.getTabuleiro().getJogador().getTipo() + ":" + chatService.getEscreverMensagem().getText());
+            tabuleiroService.adicionarMensagemChat(tabuleiroService.getTabuleiro().getJogador().getTipo(), chatService.getEscreverMensagem().getText());
+            chatService.limparMensagem();
         }
     }
 

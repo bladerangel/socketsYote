@@ -110,6 +110,10 @@ public class TabuleiroService {
         passarTurno.setDisable(desabilitar);
     }
 
+    public void adicionarMensagemChat(int jogador, String mensagem) {
+        chatService.adicionarMensagemChat("O jogador " + jogador + " digitou: " + mensagem);
+    }
+
     public void pegarPeca() {
         chatService.adicionarMensagemChat("O jogador " + tabuleiro.getTurnoJogador().getTipo() + " tirou 1 peça");
     }

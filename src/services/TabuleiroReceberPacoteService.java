@@ -5,17 +5,20 @@ import utils.JanelaAlerta;
 public class TabuleiroReceberPacoteService {
 
 
-    private TabuleiroService tabuleiroService;
     private JanelaAlerta janelaAlerta;
+    private TabuleiroService tabuleiroService;
 
     public TabuleiroReceberPacoteService(JanelaAlerta janelaAlerta, TabuleiroService tabuleiroService) {
         this.janelaAlerta = janelaAlerta;
         this.tabuleiroService = tabuleiroService;
-
     }
 
     public void receberPacoteIniciarPartida() {
         janelaAlerta.janelaAlertaRunLater("Iniciar Partida", null, "O jogador 2 se conectou!");
+    }
+
+    public void receberPacoteMensagemChat(int jogador, String mensagem) {
+        tabuleiroService.adicionarMensagemChat(jogador, mensagem);
     }
 
     public void recebePacotePegarPeca() {
@@ -109,8 +112,9 @@ public class TabuleiroReceberPacoteService {
                     recebePacoteDesistirPartida(Integer.parseInt(mensagemRecebida.split(":")[1]));
                 } else if (mensagemRecebida.matches("^sairPartida:\\d$")) {
                     receberPacoteSairPartida(Integer.parseInt(mensagemRecebida.split(":")[1]));
-                } else {
-                    tabuleiroService.getChatService().adicionarMensagemChat(mensagemRecebida);
+                } else if (mensagemRecebida.matches("^jogadorDigitou:\\d:\\w+$")) {
+                    String[] mensagem = mensagemRecebida.split(":");
+                    receberPacoteMensagemChat(Integer.parseInt(mensagem[1]), mensagem[2]);
                 }
             }
         }).start();

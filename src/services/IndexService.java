@@ -22,7 +22,7 @@ public class IndexService {
         comunicacaoService.iniciarComunicacao();
         chatService = new ChatService(escreverMensagem, chat, comunicacaoService);
         tabuleiroService = new TabuleiroService(tabuleiroPane, numeroPecas, numeroPecasAdversarias, tipoJogador, turnoAtual, pegarPeca, passarTurno, janelaAlerta, chatService, comunicacaoService);
-        tabuleiroEnviarPacoteService = new TabuleiroEnviarPacoteService(tabuleiroService);
+        tabuleiroEnviarPacoteService = new TabuleiroEnviarPacoteService(tabuleiroService, comunicacaoService, chatService);
         tabuleiroEnviarPacoteService.enviarPacoteIniciarPartida(comunicacaoService.isServidor());
         tabuleiroReceberPacoteService = new TabuleiroReceberPacoteService(janelaAlerta, tabuleiroService);
         tabuleiroReceberPacoteService.iniciarThreadRecebePacotes();

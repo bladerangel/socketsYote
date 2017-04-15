@@ -24,9 +24,7 @@ public class ChatService {
         escreverMensagem.clear();
     }
 
-    public void enviarPacoteMensagemChat() {
-        comunicacaoService.getComunicacao().enviarPacote(escreverMensagem.getText());
-        adicionarMensagemChat(escreverMensagem.getText());
-        limparMensagem();
+    public TextField getEscreverMensagem() {
+        return escreverMensagem;
     }
 }
