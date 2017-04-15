@@ -1,6 +1,5 @@
 package models;
 
-
 public class Jogador {
 
     private int tipo;

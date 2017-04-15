@@ -30,9 +30,9 @@ public class CarregarView {
         }
     }
 
-    public void fecharConexao() {
+    public void sairPartida() {
         IndexController indexController = (IndexController) fxmlLoader.getController();
-        estagio.setOnCloseRequest(event -> indexController.fecharConexao());
+        estagio.setOnCloseRequest(event -> indexController.sairPartida());
     }
 
     public void show() {

@@ -47,36 +47,35 @@ public class IndexController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         indexService = new IndexService(tabuleiroPane, numeroPecas, numeroPecasAdversarias, tipoJogador, turnoAtual, escreverMensagem, chat, pegarPeca, passarTurno);
-        indexService.iniciarComunicacao();
-        indexService.iniciarThreadRecebePacotes();
+        indexService.iniciarJogo();
     }
 
     @FXML
     public void pegarPeca() {
-        indexService.enviarPacotePegarPeca();
+        indexService.getTabuleiroEnviarPacoteService().enviarPacotePegarPeca();
     }
 
     @FXML
     public void passarTurno() {
-        indexService.enviarPacotePassarTurno();
+        indexService.getTabuleiroEnviarPacoteService().enviarPacotePassarTurno();
     }
 
     @FXML
     private void desistirPartida() {
-        indexService.enviarPacoteDesistirPartida();
+        indexService.getTabuleiroEnviarPacoteService().enviarPacoteDesistirPartida();
     }
 
     @FXML
     public void limparMensagem() {
-        indexService.limparMensagem();
+        indexService.getChatService().limparMensagem();
     }
 
     @FXML
     public void enviarMensagem() {
-        indexService.enviarPacoteMensagemChat();
+        indexService.getChatService().enviarPacoteMensagemChat();
     }
 
-    public void fecharConexao(){
+    public void sairPartida() {
         indexService.sairPartida();
     }
 }

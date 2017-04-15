@@ -36,13 +36,13 @@ public class ComunicacaoTCP {
 
     }
 
+    public boolean isConectado() {
+       return !cliente.isOutputShutdown();
+    }
+
     public void esperandoConexao() throws IOException {
         cliente = servidor.accept();
         iniciarStreams();
-    }
-
-    public boolean perdeuConexao() throws SocketException {
-        return cliente.getReuseAddress();
     }
 
     public void enviarPacote(String mensagem) {
@@ -68,6 +68,8 @@ public class ComunicacaoTCP {
 
     public void fecharConexao() {
         try {
+            cliente.shutdownOutput();
+            cliente.shutdownInput();
             cliente.close();
         } catch (IOException e) {
             e.printStackTrace();

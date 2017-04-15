@@ -13,8 +13,9 @@ public class Main extends Application {
         carregarView = new CarregarView("index");
         carregarView.setEstagio(primaryStage);
         carregarView.setCena();
-        carregarView.fecharConexao();
+
         carregarView.show();
+        carregarView.sairPartida();
 
     }
 

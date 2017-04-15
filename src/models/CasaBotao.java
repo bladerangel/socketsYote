@@ -1,6 +1,5 @@
 package models;
 
-
 import javafx.scene.control.Button;
 
 public class CasaBotao extends Button {
@@ -26,6 +25,12 @@ public class CasaBotao extends Button {
             getStyleClass().remove("imagemPeca");
         else
             getStyleClass().remove("imagemPecaAdversaria");
+    }
+
+    public void resetarCasa() {
+        casa.getPeca().setTipo(0);
+        getStyleClass().remove("imagemPeca");
+        getStyleClass().remove("imagemPecaAdversaria");
     }
 
     public Casa getCasa() {
