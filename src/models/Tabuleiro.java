@@ -5,6 +5,8 @@ public class Tabuleiro {
     private Jogador jogador;
     private Jogador jogadorAdversario;
     private Jogador turnoJogador;
+    public static int QUANTIDADE_LINHAS = 5;
+    public static int QUANTIDADE_COLUNAS = 6;
     private int posicaoInicial;
 
     public Tabuleiro(Jogador jogador, Jogador jogadorAdversario, Jogador turnoJogador) {

@@ -1,89 +1,82 @@
 package controllers;
 
-import javafx.beans.value.ObservableStringValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import models.Comunicacao;
-import models.ComunicacaoTCP;
-import services.IndexService;
 
-import java.io.IOException;
-import java.net.SocketException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import services.IndexService;
 
 public class IndexController implements Initializable {
 
     @FXML
-    BorderPane janela;
+    private Pane tabuleiroPane;
 
     @FXML
-    Pane tabuleiro;
+    private Text numeroPecas;
 
     @FXML
-    Text numeroPecas;
+    private Text numeroPecasAdversarias;
 
     @FXML
-    Text numeroPecasAdversarias;
+    private Text tipoJogador;
 
     @FXML
-    TextField escrever;
+    private Text turnoAtual;
 
     @FXML
-    TextArea chat;
+    private TextField escreverMensagem;
 
     @FXML
-    Text numeroJogador;
+    private TextArea chat;
 
     @FXML
-    Text turno;
+    private Button pegarPeca;
 
     @FXML
-    Button removerPeca;
-
-    @FXML
-    Button passarTurno;
+    private Button passarTurno;
 
     private IndexService indexService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        indexService = new IndexService(tabuleiro, numeroJogador, chat, escrever, turno, numeroPecasAdversarias, removerPeca,numeroPecas, passarTurno);
+        indexService = new IndexService(tabuleiroPane, numeroPecas, numeroPecasAdversarias, tipoJogador, turnoAtual, escreverMensagem, chat, pegarPeca, passarTurno);
         indexService.iniciarComunicacao();
         indexService.iniciarThreadRecebePacotes();
     }
 
     @FXML
-    public void removerPeca() {
-        indexService.removerPeca(true);
+    public void pegarPeca() {
+        indexService.enviarPacotePegarPeca();
     }
 
     @FXML
     public void passarTurno() {
-        indexService.passarTurno(true);
+        indexService.enviarPacotePassarTurno();
     }
 
     @FXML
-    private void desistir(){
-        indexService.desistirPartida();
-    }
-    @FXML
-    public void limpar() {
-        escrever.clear();
+    private void desistirPartida() {
+        indexService.enviarPacoteDesistirPartida();
     }
 
     @FXML
-    public void enviar() throws IOException {
-        indexService.enviarMensagemChat();
+    public void limparMensagem() {
+        indexService.limparMensagem();
+    }
+
+    @FXML
+    public void enviarMensagem() {
+        indexService.enviarPacoteMensagemChat();
+    }
+
+    public void fecharConexao(){
+        indexService.sairPartida();
     }
 }

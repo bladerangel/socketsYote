@@ -23,10 +23,22 @@ public class ComunicacaoTCP {
 
     public void iniciarCliente(int porta) throws IOException {
         cliente = new Socket(InetAddress.getLocalHost(), porta);
+        iniciarStreams();
+    }
+
+    public void iniciarStreams() {
+        try {
+            out = new DataOutputStream(cliente.getOutputStream());
+            in = new DataInputStream(cliente.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void esperandoConexao() throws IOException {
         cliente = servidor.accept();
+        iniciarStreams();
     }
 
     public boolean perdeuConexao() throws SocketException {
@@ -35,7 +47,6 @@ public class ComunicacaoTCP {
 
     public void enviarPacote(String mensagem) {
         try {
-            out = new DataOutputStream(cliente.getOutputStream());
             out.writeUTF(mensagem);
             out.flush();
         } catch (IOException e) {
@@ -46,7 +57,6 @@ public class ComunicacaoTCP {
 
     public String recebePacote() {
         try {
-            in = new DataInputStream(cliente.getInputStream());
             mensagem = in.readUTF();
             System.out.println("Mensagem Recebida: " + mensagem);
         } catch (IOException e) {

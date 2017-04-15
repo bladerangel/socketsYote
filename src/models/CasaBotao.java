@@ -3,11 +3,11 @@ package models;
 
 import javafx.scene.control.Button;
 
-public class CasaLayout extends Button {
+public class CasaBotao extends Button {
 
     private Casa casa;
 
-    public CasaLayout() {
+    public CasaBotao() {
         casa = new Casa();
         getStyleClass().add("imagemCasa");
     }
