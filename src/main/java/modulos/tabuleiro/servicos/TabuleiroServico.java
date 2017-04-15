@@ -53,6 +53,14 @@ public class TabuleiroServico {
         jogadorAdversarioPadrao = new Jogador(2, 12, 0);
     }
 
+    public void iniciarPartida(boolean servidor) {
+        iniciarJogadorers();
+        if (servidor) {
+            criarTabuleiro(jogadorPadrao, jogadorAdversarioPadrao, jogadorPadrao);
+        } else {
+            criarTabuleiro(jogadorAdversarioPadrao, jogadorPadrao, jogadorPadrao);
+        }
+    }
 
     public void iniciarTabuleiro(Jogador jogador, Jogador jogadorAdversario, Jogador turnoJogador) {
         casasTabuleiro.forEach(CasaBotao::resetarCasa);

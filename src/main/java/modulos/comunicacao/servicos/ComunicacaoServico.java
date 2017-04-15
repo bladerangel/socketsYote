@@ -21,6 +21,7 @@ public class ComunicacaoServico {
             comunicacao.iniciarServidor(9999);
             janelaAlerta.janelaAlerta("Iniciar Partida", null, "Aguarde o jogador 2 conectar-se ....");
             comunicacao.esperandoConexao();
+            janelaAlerta.janelaAlerta("Iniciar Partida", null, "O jogador 2 conectou-se");
             servidor = true;
         } catch (IOException e) {
             try {

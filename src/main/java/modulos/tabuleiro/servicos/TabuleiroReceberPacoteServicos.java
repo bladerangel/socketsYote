@@ -13,10 +13,6 @@ public class TabuleiroReceberPacoteServicos {
         this.tabuleiroServico = tabuleiroServico;
     }
 
-    public void receberPacoteIniciarPartida() {
-        tabuleiroServico.getChatServico().adicionarMensagemChat("O jogador 2 conectou-se!");
-    }
-
     public void receberPacoteMensagemChat(int jogador, String mensagem) {
         tabuleiroServico.adicionarMensagemChat(jogador, mensagem);
     }
@@ -86,9 +82,7 @@ public class TabuleiroReceberPacoteServicos {
             String mensagemRecebida;
             while (tabuleiroServico.getComunicacaoServico().getComunicacao().isConectado()) {
                 mensagemRecebida = tabuleiroServico.getComunicacaoServico().getComunicacao().receberPacote();
-                if (mensagemRecebida.matches("^iniciarPartida$")) {
-                    receberPacoteIniciarPartida();
-                } else if (mensagemRecebida.matches("^pegarPeca$")) {
+                if (mensagemRecebida.matches("^pegarPeca$")) {
                     recebePacotePegarPeca();
                 } else if (mensagemRecebida.matches("^passarTurno$")) {
                     receberPacotePassarTurno();

@@ -14,22 +14,7 @@ public class TabuleiroEnviarPacoteServico {
         this.tabuleiroServico = tabuleiroServico;
         this.comunicacaoServico = comunicacaoServico;
         this.chatServico = chatServico;
-    }
-
-    public void iniciarAcaoCasas() {
         tabuleiroServico.getCasasTabuleiro().forEach(casa -> casa.setOnMouseClicked(event -> movimentarPeca((CasaBotao) event.getSource())));
-    }
-
-    public void enviarPacoteIniciarPartida(boolean servidor) {
-        tabuleiroServico.iniciarJogadorers();
-        if (servidor) {
-            tabuleiroServico.criarTabuleiro(tabuleiroServico.getJogadorPadrao(), tabuleiroServico.getJogadorAdversarioPadrao(), tabuleiroServico.getJogadorPadrao());
-            iniciarAcaoCasas();
-        } else {
-            tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("iniciarPartida");
-            tabuleiroServico.criarTabuleiro(tabuleiroServico.getJogadorAdversarioPadrao(), tabuleiroServico.getJogadorPadrao(), tabuleiroServico.getJogadorPadrao());
-            iniciarAcaoCasas();
-        }
     }
 
     public void enviarPacoteMensagemChat() {
