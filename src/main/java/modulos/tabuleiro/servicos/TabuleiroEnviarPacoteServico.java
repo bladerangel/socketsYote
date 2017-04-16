@@ -3,14 +3,18 @@ package modulos.tabuleiro.servicos;
 import modulos.casa.componentes.CasaBotao;
 import modulos.chat.servicos.ChatServico;
 import modulos.comunicacao.servicos.ComunicacaoServico;
+import utils.JanelaAlerta;
 
 public class TabuleiroEnviarPacoteServico {
 
+    private JanelaAlerta janelaAlerta;
     private TabuleiroServico tabuleiroServico;
     private ComunicacaoServico comunicacaoServico;
     private ChatServico chatServico;
 
-    public TabuleiroEnviarPacoteServico(TabuleiroServico tabuleiroServico, ComunicacaoServico comunicacaoServico, ChatServico chatServico) {
+
+    public TabuleiroEnviarPacoteServico(JanelaAlerta janelaAlerta, TabuleiroServico tabuleiroServico, ComunicacaoServico comunicacaoServico, ChatServico chatServico) {
+        this.janelaAlerta = janelaAlerta;
         this.tabuleiroServico = tabuleiroServico;
         this.comunicacaoServico = comunicacaoServico;
         this.chatServico = chatServico;
@@ -28,12 +32,12 @@ public class TabuleiroEnviarPacoteServico {
     public void enviarPacotePegarPeca() {
         tabuleiroServico.pegarPeca();
         tabuleiroServico.desabilitarBotaoPegarPeca(true);
-        tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("pegarPeca");
+        comunicacaoServico.getComunicacao().enviarPacote("pegarPeca");
     }
 
     public void enviarPacotePassarTurno() {
         tabuleiroServico.passarTurno();
-        tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("passarTurno");
+        comunicacaoServico.getComunicacao().enviarPacote("passarTurno");
         tabuleiroServico.desabilitarBotaoPegarPeca(true);
         tabuleiroServico.desabilitarBotaoPassarTurno(true);
     }
@@ -41,14 +45,14 @@ public class TabuleiroEnviarPacoteServico {
     public void enviarPacoteAdicionarPeca(int posicao) {
         tabuleiroServico.adicionarPeca(posicao);
         tabuleiroServico.setTextNumeroPecas();
-        tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("adicionarPeca:" + posicao);
+        comunicacaoServico.getComunicacao().enviarPacote("adicionarPeca:" + posicao);
         enviarPacotePassarTurno();
     }
 
 
     public void enviarPacoteAndarPeca(int posicaoInicial, int posicaoFinal) {
         tabuleiroServico.andarPecar(posicaoInicial, posicaoFinal);
-        tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("andarPeca:" + posicaoInicial + ":" + posicaoFinal);
+        comunicacaoServico.getComunicacao().enviarPacote("andarPeca:" + posicaoInicial + ":" + posicaoFinal);
         enviarPacotePassarTurno();
     }
 
@@ -122,7 +126,7 @@ public class TabuleiroEnviarPacoteServico {
             tabuleiroServico.setTextNumeroPecasAdversarias();
             tabuleiroServico.desabilitarBotaoPegarPeca(true);
             tabuleiroServico.desabilitarBotaoPassarTurno(false);
-            tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("capturarPeca:" + posicaoInicial + ":" + posicaoFinal + ":" + posicaoVerificar);
+            comunicacaoServico.getComunicacao().enviarPacote("capturarPeca:" + posicaoInicial + ":" + posicaoFinal + ":" + posicaoVerificar);
             verificarVitoria();
             verificarEmpate();
         }
@@ -135,7 +139,7 @@ public class TabuleiroEnviarPacoteServico {
             tabuleiroServico.removerOutraPeca(posicao);
             tabuleiroServico.getTabuleiro().getTurnoJogador().setRemoverOutraPeca(false);
             tabuleiroServico.setTextNumeroPecasAdversarias();
-            tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("removerOutraPeca:" + posicao);
+            comunicacaoServico.getComunicacao().enviarPacote("removerOutraPeca:" + posicao);
             verificarVitoria();
             verificarEmpate();
 
@@ -144,8 +148,8 @@ public class TabuleiroEnviarPacoteServico {
 
     public void verificarVitoria() {
         if (tabuleiroServico.getTabuleiro().getJogadorAdversario().totalPecas() == 0) {
-            tabuleiroServico.getJanelaAlerta().janelaAlertaRunLater("Resultado da partida", null, "Você ganhou a partida!");
-            tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("vitoriaPartida");
+            janelaAlerta.janelaAlertaRunLater("Resultado da partida", null, "Você ganhou a partida!");
+            comunicacaoServico.getComunicacao().enviarPacote("vitoriaPartida");
             enviarPacoteReiniciarPartida();
         }
     }
@@ -153,24 +157,24 @@ public class TabuleiroEnviarPacoteServico {
     public void verificarEmpate() {
         if (tabuleiroServico.getTabuleiro().getTurnoJogador().totalPecas() <= 3 && tabuleiroServico.getTabuleiro().getJogadorAdversario().totalPecas() <= 3) {
             tabuleiroServico.empate();
-            tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("empatePartida");
+            comunicacaoServico.getComunicacao().enviarPacote("empatePartida");
             enviarPacoteReiniciarPartida();
         }
     }
 
     public void enviarPacoteReiniciarPartida() {
         tabuleiroServico.reiniciarPartida();
-        tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("reiniciarPartida");
+        comunicacaoServico.getComunicacao().enviarPacote("reiniciarPartida");
     }
 
     public void enviarPacoteDesistirPartida() {
-        tabuleiroServico.getChatServico().adicionarMensagemChat("O jogador " + tabuleiroServico.getTabuleiro().getJogador().getTipo() + " desistiu da partida!");
-        tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("desistirPartida:" + tabuleiroServico.getTabuleiro().getJogador().getTipo());
+        chatServico.adicionarMensagemChat("O jogador " + tabuleiroServico.getTabuleiro().getJogador().getTipo() + " desistiu da partida!");
+        comunicacaoServico.getComunicacao().enviarPacote("desistirPartida:" + tabuleiroServico.getTabuleiro().getJogador().getTipo());
         enviarPacoteReiniciarPartida();
     }
 
     public void enviarPacoteSairPartida() {
-        tabuleiroServico.getComunicacaoServico().getComunicacao().enviarPacote("sairPartida:" + tabuleiroServico.getTabuleiro().getJogador().getTipo());
+        comunicacaoServico.getComunicacao().enviarPacote("sairPartida:" + tabuleiroServico.getTabuleiro().getJogador().getTipo());
         tabuleiroServico.sairPartida();
     }
 

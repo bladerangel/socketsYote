@@ -202,24 +202,4 @@ public class TabuleiroServico {
     public ArrayList<CasaBotao> getCasasTabuleiro() {
         return casasTabuleiro;
     }
-
-    public ChatServico getChatServico() {
-        return chatServico;
-    }
-
-    public ComunicacaoServico getComunicacaoServico() {
-        return comunicacaoServico;
-    }
-
-    public JanelaAlerta getJanelaAlerta() {
-        return janelaAlerta;
-    }
-
-    public Jogador getJogadorPadrao() {
-        return jogadorPadrao;
-    }
-
-    public Jogador getJogadorAdversarioPadrao() {
-        return jogadorAdversarioPadrao;
-    }
 }

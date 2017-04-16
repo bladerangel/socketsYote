@@ -1,5 +1,7 @@
 package modulos.tabuleiro.servicos;
 
+import modulos.chat.servicos.ChatServico;
+import modulos.comunicacao.servicos.ComunicacaoServico;
 import utils.JanelaAlerta;
 
 public class TabuleiroReceberPacoteServicos {
@@ -7,10 +9,14 @@ public class TabuleiroReceberPacoteServicos {
 
     private JanelaAlerta janelaAlerta;
     private TabuleiroServico tabuleiroServico;
+    private ComunicacaoServico comunicacaoServico;
+    private ChatServico chatServico;
 
-    public TabuleiroReceberPacoteServicos(JanelaAlerta janelaAlerta, TabuleiroServico tabuleiroServico) {
+    public TabuleiroReceberPacoteServicos(JanelaAlerta janelaAlerta, TabuleiroServico tabuleiroServico, ComunicacaoServico comunicacaoServico, ChatServico chatServico) {
         this.janelaAlerta = janelaAlerta;
         this.tabuleiroServico = tabuleiroServico;
+        this.comunicacaoServico = comunicacaoServico;
+        this.chatServico = chatServico;
     }
 
     public void receberPacoteMensagemChat(int jogador, String mensagem) {
@@ -54,7 +60,7 @@ public class TabuleiroReceberPacoteServicos {
 
     public void receberPacoteVitoria() {
         tabuleiroServico.vitoria();
-        tabuleiroServico.getJanelaAlerta().janelaAlertaRunLater("Resultado da partida", null, "Você perdeu a partida!");
+        janelaAlerta.janelaAlertaRunLater("Resultado da partida", null, "Você perdeu a partida!");
     }
 
     public void receberEmpatePartida() {
@@ -67,21 +73,21 @@ public class TabuleiroReceberPacoteServicos {
 
 
     public void recebePacoteDesistirPartida(int jogador) {
-        tabuleiroServico.getChatServico().adicionarMensagemChat("O jogador " + jogador + " desistiu da partida!");
-        tabuleiroServico.getJanelaAlerta().janelaAlertaRunLater("Resultado partida", null, "O jogador " + jogador + " desistiu da partida!");
+        chatServico.adicionarMensagemChat("O jogador " + jogador + " desistiu da partida!");
+        janelaAlerta.janelaAlertaRunLater("Resultado partida", null, "O jogador " + jogador + " desistiu da partida!");
     }
 
     public void receberPacoteSairPartida(int jogador) {
         janelaAlerta.janelaAlertaRunLater("Sair partida", null, "O jogador " + jogador + " saiu da partida!");
-        tabuleiroServico.getChatServico().adicionarMensagemChat("O jogador " + jogador + " saiu da partida!");
+        chatServico.adicionarMensagemChat("O jogador " + jogador + " saiu da partida!");
         tabuleiroServico.sairPartida();
     }
 
     public void iniciarThreadRecebePacotes() {
         new Thread(() -> {
             String mensagemRecebida;
-            while (tabuleiroServico.getComunicacaoServico().getComunicacao().isConectado()) {
-                mensagemRecebida = tabuleiroServico.getComunicacaoServico().getComunicacao().receberPacote();
+            while (comunicacaoServico.getComunicacao().isConectado()) {
+                mensagemRecebida = comunicacaoServico.getComunicacao().receberPacote();
                 if (mensagemRecebida.matches("^pegarPeca$")) {
                     recebePacotePegarPeca();
                 } else if (mensagemRecebida.matches("^passarTurno$")) {
