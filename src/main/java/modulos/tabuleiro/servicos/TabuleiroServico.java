@@ -30,9 +30,7 @@ public class TabuleiroServico {
     private ArrayList<CasaBotao> casasTabuleiro;
     private ChatServico chatServico;
     private ComunicacaoServico comunicacaoServico;
-
-    private Jogador jogadorPadrao;
-    private Jogador jogadorAdversarioPadrao;
+    private boolean servidor;
 
     public TabuleiroServico(Pane tabuleiroPane, Text numeroPecas, Text numeroPecasAdversarias, Text tipoJogador, Text turnoAtual, Button pegarPeca, Button passarTurno, JanelaAlerta janelaAlerta, ChatServico chatServico, ComunicacaoServico comunicacaoServico) {
         this.tabuleiroPane = tabuleiroPane;
@@ -48,37 +46,13 @@ public class TabuleiroServico {
         casasTabuleiro = new ArrayList<CasaBotao>();
     }
 
-    public void iniciarJogadorers() {
-        jogadorPadrao = new Jogador(1, 12, 0);
-        jogadorAdversarioPadrao = new Jogador(2, 12, 0);
-    }
-
     public void iniciarPartida(boolean servidor) {
-        iniciarJogadorers();
-        if (servidor) {
-            criarTabuleiro(jogadorPadrao, jogadorAdversarioPadrao, jogadorPadrao);
-        } else {
-            criarTabuleiro(jogadorAdversarioPadrao, jogadorPadrao, jogadorPadrao);
-        }
-    }
-
-    public void iniciarTabuleiro(Jogador jogador, Jogador jogadorAdversario, Jogador turnoJogador) {
-        casasTabuleiro.forEach(CasaBotao::resetarCasa);
-        tabuleiro = new Tabuleiro(jogador, jogadorAdversario, turnoJogador);
-        if (tabuleiro.getTurnoJogador() == tabuleiro.getJogador()) {
-            desabilitarBotaoPegarPeca(false);
-        } else {
-            desabilitarBotaoPegarPeca(true);
-        }
-
-        desabilitarBotaoPassarTurno(true);
-        setTextTipoJogador();
-        setTextNumeroPecas();
-        setTextNumeroPecasAdversarias();
+        this.servidor = servidor;
+        criarTabuleiro();
 
     }
 
-    public void criarTabuleiro(Jogador jogador, Jogador jogadorAdversario, Jogador turnoJogador) {
+    public void criarTabuleiro() {
         VBox linhasTabuleiro = new VBox();
         tabuleiroPane.getChildren().add(linhasTabuleiro);
         for (int i = 0; i < Tabuleiro.QUANTIDADE_LINHAS; i++) {
@@ -92,7 +66,22 @@ public class TabuleiroServico {
                 casa.getCasa().setPosicao(casasTabuleiro.size() - 1);
             }
         }
-        iniciarTabuleiro(jogador, jogadorAdversario, turnoJogador);
+        iniciarTabuleiro();
+    }
+
+    public void iniciarTabuleiro() {
+        casasTabuleiro.forEach(CasaBotao::resetarCasa);
+        tabuleiro = new Tabuleiro(servidor);
+        if (tabuleiro.getTurnoJogador() == tabuleiro.getJogador()) {
+            desabilitarBotaoPegarPeca(false);
+        } else {
+            desabilitarBotaoPegarPeca(true);
+        }
+
+        desabilitarBotaoPassarTurno(true);
+        setTextTipoJogador();
+        setTextNumeroPecas();
+        setTextNumeroPecasAdversarias();
     }
 
 
@@ -175,12 +164,7 @@ public class TabuleiroServico {
 
     public void reiniciarPartida() {
         chatServico.adicionarMensagemChat("O jogo foi reiniciado!");
-        iniciarJogadorers();
-        if (tabuleiro.getJogador().getTipo() == 1) {
-            iniciarTabuleiro(jogadorPadrao, jogadorAdversarioPadrao, jogadorPadrao);
-        } else {
-            iniciarTabuleiro(jogadorAdversarioPadrao, jogadorPadrao, jogadorPadrao);
-        }
+        iniciarTabuleiro();
     }
 
     public void sairPartida() {

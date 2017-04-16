@@ -7,14 +7,20 @@ public class Tabuleiro {
     private Jogador jogador;
     private Jogador jogadorAdversario;
     private Jogador turnoJogador;
-    public static int QUANTIDADE_LINHAS = 5;
-    public static int QUANTIDADE_COLUNAS = 6;
+    public static final int QUANTIDADE_LINHAS = 5;
+    public static final int QUANTIDADE_COLUNAS = 6;
     private int posicaoInicial;
 
-    public Tabuleiro(Jogador jogador, Jogador jogadorAdversario, Jogador turnoJogador) {
-        this.jogador = jogador;
-        this.jogadorAdversario = jogadorAdversario;
-        this.turnoJogador = turnoJogador;
+    public Tabuleiro(boolean servidor) {
+        if (servidor) {
+            jogador = new Jogador(Jogador.TIPO_JOGADOR_SERVIDOR, Jogador.QUANTIDADE_PECAS, 0);
+            jogadorAdversario = new Jogador(Jogador.TIPO_JOGADOR_CLIENTE, Jogador.QUANTIDADE_PECAS, 0);
+            turnoJogador = jogador;
+        } else {
+            jogador = new Jogador(Jogador.TIPO_JOGADOR_CLIENTE, Jogador.QUANTIDADE_PECAS, 0);
+            jogadorAdversario = new Jogador(Jogador.TIPO_JOGADOR_SERVIDOR, Jogador.QUANTIDADE_PECAS, 0);
+            turnoJogador = jogadorAdversario;
+        }
         posicaoInicial = -1;
     }
 
@@ -46,4 +52,5 @@ public class Tabuleiro {
     public int getPosicaoInicial() {
         return posicaoInicial;
     }
+
 }
