@@ -33,10 +33,6 @@ public class MainServico {
         tabuleiroReceberPacoteServicos.iniciarThreadRecebePacotes();
     }
 
-    public void sairPartida() {
-        tabuleiroEnviarPacoteServico.enviarPacoteSairPartida();
-    }
-
     public ChatServico getChatServico() {
         return chatServico;
     }

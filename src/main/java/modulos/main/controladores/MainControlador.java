@@ -75,6 +75,6 @@ public class MainControlador implements Initializable {
     }
 
     public void sairPartida() {
-        mainServico.sairPartida();
+        mainServico.getTabuleiroEnviarPacoteServico().enviarPacoteSairPartida();
     }
 }
