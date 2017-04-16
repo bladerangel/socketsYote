@@ -1,11 +1,13 @@
 package modulos.peca.modelos;
 
+import modulos.casa.modelos.Casa;
+
 public class Peca {
 
     private int tipo;
 
     public Peca() {
-        tipo = 0;
+        tipo = Casa.CASA_VAZIA;
     }
 
     public void setTipo(int tipo) {

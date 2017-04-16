@@ -15,22 +15,22 @@ public class CasaBotao extends Button {
 
     public void colocarPeca(Jogador jogador) {
         casa.getPeca().setTipo(jogador.getTipo());
-        if (jogador.getTipo() == 1)
+        if (jogador.getTipo() == Jogador.TIPO_JOGADOR_SERVIDOR)
             getStyleClass().add("imagemPeca");
         else
             getStyleClass().add("imagemPecaAdversaria");
     }
 
     public void removerPeca(Jogador jogador) {
-        casa.getPeca().setTipo(0);
-        if (jogador.getTipo() == 1)
+        casa.getPeca().setTipo(Casa.CASA_VAZIA);
+        if (jogador.getTipo() == Jogador.TIPO_JOGADOR_SERVIDOR)
             getStyleClass().remove("imagemPeca");
         else
             getStyleClass().remove("imagemPecaAdversaria");
     }
 
     public void resetarCasa() {
-        casa.getPeca().setTipo(0);
+        casa.getPeca().setTipo(Casa.CASA_VAZIA);
         getStyleClass().remove("imagemPeca");
         getStyleClass().remove("imagemPecaAdversaria");
     }

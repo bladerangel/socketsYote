@@ -6,6 +6,7 @@ public class Casa {
 
     private Peca peca;
     private int posicao;
+    public static final int CASA_VAZIA = 0;
 
     public Casa() {
         peca = new Peca();

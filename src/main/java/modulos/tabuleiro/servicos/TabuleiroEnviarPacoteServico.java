@@ -1,8 +1,11 @@
 package modulos.tabuleiro.servicos;
 
 import modulos.casa.componentes.CasaBotao;
+import modulos.casa.modelos.Casa;
 import modulos.chat.servicos.ChatServico;
 import modulos.comunicacao.servicos.ComunicacaoServico;
+import modulos.peca.modelos.Peca;
+import modulos.tabuleiro.modelos.Tabuleiro;
 import utils.JanelaAlerta;
 
 public class TabuleiroEnviarPacoteServico {
@@ -64,14 +67,14 @@ public class TabuleiroEnviarPacoteServico {
     }
 
     public void verificarMovimento(int posicaoInicial, int posicaoFinal) {
-        if (tabuleiroServico.getPegarPeca().isDisable() && tabuleiroServico.getPassarTurno().isDisable() && tabuleiroServico.getTabuleiro().getTurnoJogador().getQuantidadePecasForaTabuleiro() > 0 && tabuleiroServico.getCasasTabuleiro().get(posicaoFinal).getCasa().getPeca().getTipo() == 0) { //adicionar Peça tabuleiro
+        if (tabuleiroServico.getPegarPeca().isDisable() && tabuleiroServico.getPassarTurno().isDisable() && tabuleiroServico.getTabuleiro().getTurnoJogador().getQuantidadePecasForaTabuleiro() > 0 && tabuleiroServico.getCasasTabuleiro().get(posicaoFinal).getCasa().getPeca().getTipo() == Casa.CASA_VAZIA) { //adicionar Peça tabuleiro
             enviarPacoteAdicionarPeca(posicaoFinal);
         } else if (tabuleiroServico.getPassarTurno().isDisable() && tabuleiroServico.getCasasTabuleiro().get(posicaoFinal).getCasa().getPeca().getTipo() == tabuleiroServico.getTabuleiro().getTurnoJogador().getTipo()) { //escolher peça
             tabuleiroServico.selecionarPeca(posicaoFinal);
-        } else if (tabuleiroServico.getPassarTurno().isDisable() && tabuleiroServico.getCasasTabuleiro().get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
+        } else if (tabuleiroServico.getPassarTurno().isDisable() && tabuleiroServico.getCasasTabuleiro().get(posicaoFinal).getCasa().getPeca().getTipo() == Casa.CASA_VAZIA && posicaoInicial != Tabuleiro.POSICAO_INICIAL_VAZIA && posicaoInicial != posicaoFinal) {//andar ou capturar uma peça
             verificarMovimentoAndar(posicaoInicial, posicaoFinal);
             verificaCaptura(posicaoInicial, posicaoFinal);
-        } else if (!tabuleiroServico.getPassarTurno().isDisable() && !tabuleiroServico.getTabuleiro().getTurnoJogador().isRemoverOutraPeca() && tabuleiroServico.getCasasTabuleiro().get(posicaoFinal).getCasa().getPeca().getTipo() == 0 && posicaoInicial != -1 && posicaoInicial != posicaoFinal) {//capturar multipla peças
+        } else if (!tabuleiroServico.getPassarTurno().isDisable() && !tabuleiroServico.getTabuleiro().getTurnoJogador().isRemoverOutraPeca() && tabuleiroServico.getCasasTabuleiro().get(posicaoFinal).getCasa().getPeca().getTipo() == Casa.CASA_VAZIA && posicaoInicial != Tabuleiro.POSICAO_INICIAL_VAZIA && posicaoInicial != posicaoFinal) {//capturar multipla peças
             verificaCaptura(posicaoInicial, posicaoFinal);
         } else if (!tabuleiroServico.getPassarTurno().isDisable() && tabuleiroServico.getTabuleiro().getTurnoJogador().isRemoverOutraPeca()) {//remover peça ao realizar a captura multipla
             enviarPacoteRemoverOutraPeca(posicaoFinal);
@@ -149,6 +152,7 @@ public class TabuleiroEnviarPacoteServico {
     public void verificarVitoria() {
         if (tabuleiroServico.getTabuleiro().getJogadorAdversario().totalPecas() == 0) {
             janelaAlerta.janelaAlertaRunLater("Resultado da partida", null, "Você ganhou a partida!");
+            tabuleiroServico.vitoria();
             comunicacaoServico.getComunicacao().enviarPacote("vitoriaPartida");
             enviarPacoteReiniciarPartida();
         }

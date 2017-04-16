@@ -1,5 +1,6 @@
 package modulos.tabuleiro.modelos;
 
+import modulos.casa.modelos.Casa;
 import modulos.jogador.modelos.Jogador;
 
 public class Tabuleiro {
@@ -9,19 +10,20 @@ public class Tabuleiro {
     private Jogador turnoJogador;
     public static final int QUANTIDADE_LINHAS = 5;
     public static final int QUANTIDADE_COLUNAS = 6;
+    public static final int POSICAO_INICIAL_VAZIA = -1;
     private int posicaoInicial;
 
     public Tabuleiro(boolean servidor) {
         if (servidor) {
-            jogador = new Jogador(Jogador.TIPO_JOGADOR_SERVIDOR, Jogador.QUANTIDADE_PECAS, 0);
-            jogadorAdversario = new Jogador(Jogador.TIPO_JOGADOR_CLIENTE, Jogador.QUANTIDADE_PECAS, 0);
+            jogador = new Jogador(Jogador.TIPO_JOGADOR_SERVIDOR, Jogador.QUANTIDADE_PECAS, Casa.CASA_VAZIA);
+            jogadorAdversario = new Jogador(Jogador.TIPO_JOGADOR_CLIENTE, Jogador.QUANTIDADE_PECAS, Casa.CASA_VAZIA);
             turnoJogador = jogador;
         } else {
-            jogador = new Jogador(Jogador.TIPO_JOGADOR_CLIENTE, Jogador.QUANTIDADE_PECAS, 0);
-            jogadorAdversario = new Jogador(Jogador.TIPO_JOGADOR_SERVIDOR, Jogador.QUANTIDADE_PECAS, 0);
+            jogador = new Jogador(Jogador.TIPO_JOGADOR_CLIENTE, Jogador.QUANTIDADE_PECAS, Casa.CASA_VAZIA);
+            jogadorAdversario = new Jogador(Jogador.TIPO_JOGADOR_SERVIDOR, Jogador.QUANTIDADE_PECAS, Casa.CASA_VAZIA);
             turnoJogador = jogadorAdversario;
         }
-        posicaoInicial = -1;
+        posicaoInicial = POSICAO_INICIAL_VAZIA;
     }
 
     public void mudarTurnoJogador() {
@@ -30,7 +32,7 @@ public class Tabuleiro {
         else
             turnoJogador = jogador;
         turnoJogador.setRemoverOutraPeca(false);
-        posicaoInicial = -1;
+        posicaoInicial = POSICAO_INICIAL_VAZIA;
     }
 
     public Jogador getTurnoJogador() {
