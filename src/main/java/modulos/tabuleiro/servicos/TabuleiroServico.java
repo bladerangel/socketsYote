@@ -30,7 +30,6 @@ public class TabuleiroServico {
     private ArrayList<CasaBotao> casasTabuleiro;
     private ChatServico chatServico;
     private ComunicacaoServico comunicacaoServico;
-    private boolean servidor;
 
     public TabuleiroServico(Pane tabuleiroPane, Text numeroPecas, Text numeroPecasAdversarias, Text tipoJogador, Text turnoAtual, Button pegarPeca, Button passarTurno, JanelaAlerta janelaAlerta, ChatServico chatServico, ComunicacaoServico comunicacaoServico) {
         this.tabuleiroPane = tabuleiroPane;
@@ -46,8 +45,7 @@ public class TabuleiroServico {
         casasTabuleiro = new ArrayList<CasaBotao>();
     }
 
-    public void iniciarPartida(boolean servidor) {
-        this.servidor = servidor;
+    public void iniciarPartida() {
         criarTabuleiro();
 
     }
@@ -71,7 +69,7 @@ public class TabuleiroServico {
 
     public void iniciarTabuleiro() {
         casasTabuleiro.forEach(CasaBotao::resetarCasa);
-        tabuleiro = new Tabuleiro(servidor);
+        tabuleiro = new Tabuleiro(comunicacaoServico.isServidor());
         if (tabuleiro.getTurnoJogador() == tabuleiro.getJogador()) {
             desabilitarBotaoPegarPeca(false);
         } else {
@@ -82,6 +80,7 @@ public class TabuleiroServico {
         setTextTipoJogador();
         setTextNumeroPecas();
         setTextNumeroPecasAdversarias();
+        setTextTurnoAtual();
     }
 
 

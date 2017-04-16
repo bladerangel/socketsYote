@@ -27,7 +27,7 @@ public class MainServico {
         comunicacaoServico.iniciarComunicacao();
         chatServico = new ChatServico(escreverMensagem, chat);
         tabuleiroServico = new TabuleiroServico(tabuleiroPane, numeroPecas, numeroPecasAdversarias, tipoJogador, turnoAtual, pegarPeca, passarTurno, janelaAlerta, chatServico, comunicacaoServico);
-        tabuleiroServico.iniciarPartida(comunicacaoServico.isServidor());
+        tabuleiroServico.iniciarPartida();
         tabuleiroEnviarPacoteServico = new TabuleiroEnviarPacoteServico(janelaAlerta, tabuleiroServico, comunicacaoServico, chatServico);
         tabuleiroReceberPacoteServicos = new TabuleiroReceberPacoteServicos(janelaAlerta, tabuleiroServico, comunicacaoServico, chatServico);
         tabuleiroReceberPacoteServicos.iniciarThreadRecebePacotes();
