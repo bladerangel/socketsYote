@@ -1,10 +1,11 @@
 package modulos.comunicacao.servicos;
 
 import modulos.comunicacao.modelos.Comunicacao;
-import utils.JanelaAlerta;
+import utilitarios.JanelaAlerta;
 
 import java.io.IOException;
 
+//classe servico de comunicacao usado no controlador
 public class ComunicacaoServico {
 
     private Comunicacao comunicacao;
@@ -17,13 +18,13 @@ public class ComunicacaoServico {
 
     public void iniciarComunicacao() {
         try {
-            comunicacao = new Comunicacao();
+            comunicacao = new Comunicacao(); //inicia a conexao
             comunicacao.iniciarServidor(9999);
             janelaAlerta.janelaAlerta("Iniciar Partida", null, "Aguarde o jogador 2 conectar-se ....");
             comunicacao.esperandoConexao();
             janelaAlerta.janelaAlerta("Iniciar Partida", null, "O jogador 2 conectou-se");
             servidor = true;
-        } catch (IOException e) {
+        } catch (IOException e) { //caso o servidor esteja conectado é iniciado o cliente
             try {
                 comunicacao.iniciarCliente(9999);
                 servidor = false;
@@ -38,6 +39,7 @@ public class ComunicacaoServico {
         return comunicacao;
     }
 
+    //verificar se o jogador conectado é o cliente
     public boolean isServidor() {
         return servidor;
     }

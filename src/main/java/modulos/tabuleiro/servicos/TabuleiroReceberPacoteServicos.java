@@ -2,8 +2,9 @@ package modulos.tabuleiro.servicos;
 
 import modulos.chat.servicos.ChatServico;
 import modulos.comunicacao.servicos.ComunicacaoServico;
-import utils.JanelaAlerta;
+import utilitarios.JanelaAlerta;
 
+//classe servico recebe pacote tabuleiro usado no controlador
 public class TabuleiroReceberPacoteServicos {
 
 
@@ -19,74 +20,11 @@ public class TabuleiroReceberPacoteServicos {
         this.chatServico = chatServico;
     }
 
-    public void receberPacoteMensagemChat(int jogador, String mensagem) {
-        tabuleiroServico.adicionarMensagemChat(jogador, mensagem);
-    }
-
-    public void recebePacotePegarPeca() {
-        tabuleiroServico.pegarPeca();
-    }
-
-    public void receberPacotePassarTurno() {
-        tabuleiroServico.passarTurno();
-        if (tabuleiroServico.getTabuleiro().getTurnoJogador().getQuantidadePecasForaTabuleiro() > 0)
-            tabuleiroServico.desabilitarBotaoPegarPeca(false);
-    }
-
-
-    public void receberPacoteAdicionarPeca(int posicao) {
-        tabuleiroServico.adicionarPeca(posicao);
-        tabuleiroServico.setTextNumeroPecasAdversarias();
-    }
-
-
-    public void receberPacoteAndarPeca(int posicaoInicial, int posicaoFinal) {
-        tabuleiroServico.andarPecar(posicaoInicial, posicaoFinal);
-    }
-
-    public void receberPacoteCapturarPeca(int posicaoInicial, int posicaoFinal, int posicaoVerificar) {
-        tabuleiroServico.capturarPeca(posicaoInicial, posicaoFinal, posicaoVerificar);
-        tabuleiroServico.getTabuleiro().getJogador().removerPecasDentroTabuleiro();
-        tabuleiroServico.getCasasTabuleiro().get(posicaoVerificar).removerPeca(tabuleiroServico.getTabuleiro().getJogador());
-        tabuleiroServico.setTextNumeroPecas();
-    }
-
-    public void receberPacoteRemoverOutraPeca(int posicao) {
-        tabuleiroServico.getTabuleiro().getJogador().removerPecasDentroTabuleiro();
-        tabuleiroServico.getCasasTabuleiro().get(posicao).removerPeca(tabuleiroServico.getTabuleiro().getJogador());
-        tabuleiroServico.removerOutraPeca(posicao);
-        tabuleiroServico.setTextNumeroPecas();
-    }
-
-    public void receberPacoteVitoria() {
-        tabuleiroServico.vitoria();
-        janelaAlerta.janelaAlertaRunLater("Resultado da partida", null, "Você perdeu a partida!");
-    }
-
-    public void receberEmpatePartida() {
-        tabuleiroServico.empate();
-    }
-
-    public void receberPacoteReiniciarPartida() {
-        tabuleiroServico.reiniciarPartida();
-    }
-
-
-    public void recebePacoteDesistirPartida(int jogador) {
-        chatServico.adicionarMensagemChat("O jogador " + jogador + " desistiu da partida!");
-        janelaAlerta.janelaAlertaRunLater("Resultado partida", null, "O jogador " + jogador + " desistiu da partida!");
-    }
-
-    public void receberPacoteSairPartida(int jogador) {
-        janelaAlerta.janelaAlertaRunLater("Sair partida", null, "O jogador " + jogador + " saiu da partida!");
-        chatServico.adicionarMensagemChat("O jogador " + jogador + " saiu da partida!");
-        tabuleiroServico.sairPartida();
-    }
-
+    //inicia thread de recepção de mensagens e os protocolos de mensagem de acordo com a regex
     public void iniciarThreadRecebePacotes() {
         new Thread(() -> {
             String mensagemRecebida;
-            while (comunicacaoServico.getComunicacao().isConectado()) {
+            while (comunicacaoServico.getComunicacao().isConectado()) { //verifica se o jogador está conectado
                 mensagemRecebida = comunicacaoServico.getComunicacao().receberPacote();
                 if (mensagemRecebida.matches("^pegarPeca$")) {
                     recebePacotePegarPeca();
@@ -118,6 +56,80 @@ public class TabuleiroReceberPacoteServicos {
                 }
             }
         }).start();
+    }
+
+    //recebe mensagem do chat
+    public void receberPacoteMensagemChat(int jogador, String mensagem) {
+        tabuleiroServico.adicionarMensagemChat(jogador, mensagem);
+    }
+
+    //recebe mensagem de pegar peça fora do tabuleiro
+    public void recebePacotePegarPeca() {
+        tabuleiroServico.pegarPeca();
+    }
+
+    //recebe mensagem de pasasr turno
+    public void receberPacotePassarTurno() {
+        tabuleiroServico.passarTurno();
+        if (tabuleiroServico.getTabuleiro().getTurnoJogador().getQuantidadePecasForaTabuleiro() > 0)
+            tabuleiroServico.desabilitarBotaoPegarPeca(false);
+    }
+
+    //recebe mensagem de adição de peça no tabuleiro
+    public void receberPacoteAdicionarPeca(int posicao) {
+        tabuleiroServico.adicionarPeca(posicao);
+        tabuleiroServico.setTextNumeroPecasAdversarias();
+    }
+
+    //recebe mensagem de movimentação de peça
+    public void receberPacoteAndarPeca(int posicaoInicial, int posicaoFinal) {
+        tabuleiroServico.andarPecar(posicaoInicial, posicaoFinal);
+    }
+
+    //recebe mensagem de captura de peça
+    public void receberPacoteCapturarPeca(int posicaoInicial, int posicaoFinal, int posicaoVerificar) {
+        tabuleiroServico.capturarPeca(posicaoInicial, posicaoFinal, posicaoVerificar);
+        tabuleiroServico.getTabuleiro().getJogador().removerPecasDentroTabuleiro();
+        tabuleiroServico.getCasasTabuleiro().get(posicaoVerificar).removerPeca(tabuleiroServico.getTabuleiro().getJogador());
+        tabuleiroServico.setTextNumeroPecas();
+    }
+
+    //recebe mensagem de remoção de outra peça do adversario caso tenha capturado
+    public void receberPacoteRemoverOutraPeca(int posicao) {
+        tabuleiroServico.getTabuleiro().getJogador().removerPecasDentroTabuleiro();
+        tabuleiroServico.getCasasTabuleiro().get(posicao).removerPeca(tabuleiroServico.getTabuleiro().getJogador());
+        tabuleiroServico.removerOutraPeca(posicao);
+        tabuleiroServico.setTextNumeroPecas();
+    }
+
+    //recebe mensagem de vitoria de partida
+    public void receberPacoteVitoria() {
+        tabuleiroServico.vitoria();
+        janelaAlerta.janelaAlertaRunLater("Resultado da partida", null, "Você perdeu a partida!");
+    }
+
+    //recebe mensagem de empate de partida
+    public void receberEmpatePartida() {
+        tabuleiroServico.empate();
+    }
+
+    //recebe mensagem para reinicio de partida
+    public void receberPacoteReiniciarPartida() {
+        tabuleiroServico.reiniciarPartida();
+    }
+
+
+    //recebe mensagem para desistencia de partida
+    public void recebePacoteDesistirPartida(int jogador) {
+        chatServico.adicionarMensagemChat("O jogador " + jogador + " desistiu da partida!");
+        janelaAlerta.janelaAlertaRunLater("Resultado partida", null, "O jogador " + jogador + " desistiu da partida!");
+    }
+
+    //recebe mensagem para saida de partida
+    public void receberPacoteSairPartida(int jogador) {
+        janelaAlerta.janelaAlertaRunLater("Sair partida", null, "O jogador " + jogador + " saiu da partida!");
+        chatServico.adicionarMensagemChat("O jogador " + jogador + " saiu da partida!");
+        tabuleiroServico.sairPartida();
     }
 
 }

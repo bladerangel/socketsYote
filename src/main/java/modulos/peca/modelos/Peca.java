@@ -2,6 +2,7 @@ package modulos.peca.modelos;
 
 import modulos.casa.modelos.Casa;
 
+//classe peca modelo
 public class Peca {
 
     private int tipo;

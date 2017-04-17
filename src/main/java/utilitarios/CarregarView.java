@@ -1,4 +1,4 @@
-package utils;
+package utilitarios;
 
 import modulos.main.controladores.MainControlador;
 import javafx.fxml.FXMLLoader;
@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+//classe utilitario para o carregamento de arquivos .fxml
 public class CarregarView {
 
     private FXMLLoader fxmlLoader;
@@ -30,11 +31,13 @@ public class CarregarView {
         }
     }
 
+    //executa a açao quando o jogador fecha a janela
     public void sairPartida() {
         MainControlador mainControlador = (MainControlador) fxmlLoader.getController();
         estagio.setOnCloseRequest(event -> mainControlador.sairPartida());
     }
 
+    //mostra a aplicação layout
     public void show() {
         this.estagio.show();
     }

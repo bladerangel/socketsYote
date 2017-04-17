@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 
 import modulos.main.servicos.MainServico;
 
+//classe controladora main do layout
 public class MainControlador implements Initializable {
 
     @FXML
@@ -49,31 +50,37 @@ public class MainControlador implements Initializable {
         mainServico = new MainServico(tabuleiroPane, numeroPecas, numeroPecasAdversarias, tipoJogador, turnoAtual, escreverMensagem, chat, pegarPeca, passarTurno);
     }
 
+    //o jogador clica no botao pegar peça
     @FXML
     public void pegarPeca() {
         mainServico.getTabuleiroEnviarPacoteServico().enviarPacotePegarPeca();
     }
 
+    //o jogador clica no botao passar turno
     @FXML
     public void passarTurno() {
         mainServico.getTabuleiroEnviarPacoteServico().enviarPacotePassarTurno();
     }
 
+    //o jogador clica no botao desistir da partida
     @FXML
     private void desistirPartida() {
         mainServico.getTabuleiroEnviarPacoteServico().enviarPacoteDesistirPartida();
     }
 
+    //o jogador clica no botao limpar mensagem
     @FXML
     public void limparMensagem() {
         mainServico.getChatServico().limparMensagem();
     }
 
+    //o jogador clica no botao para enviar uma mensagem ao chat
     @FXML
     public void enviarMensagem() {
         mainServico.getTabuleiroEnviarPacoteServico().enviarPacoteMensagemChat();
     }
 
+    //o jogador clica no para sair do jogo
     public void sairPartida() {
         mainServico.getTabuleiroEnviarPacoteServico().enviarPacoteSairPartida();
     }

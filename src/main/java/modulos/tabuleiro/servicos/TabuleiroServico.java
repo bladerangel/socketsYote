@@ -7,14 +7,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import modulos.casa.componentes.CasaBotao;
 
-import modulos.jogador.modelos.Jogador;
 import modulos.tabuleiro.modelos.Tabuleiro;
 import modulos.chat.servicos.ChatServico;
 import modulos.comunicacao.servicos.ComunicacaoServico;
-import utils.JanelaAlerta;
+import utilitarios.JanelaAlerta;
 
 import java.util.ArrayList;
 
+//classe servico tabuleiro usado no controlador
 public class TabuleiroServico {
 
     private Pane tabuleiroPane;
@@ -45,11 +45,13 @@ public class TabuleiroServico {
         casasTabuleiro = new ArrayList<CasaBotao>();
     }
 
+    //inicia a partida
     public void iniciarPartida() {
         criarTabuleiro();
 
     }
 
+    //cria o layout do tabuleiro
     public void criarTabuleiro() {
         VBox linhasTabuleiro = new VBox();
         tabuleiroPane.getChildren().add(linhasTabuleiro);
@@ -67,6 +69,7 @@ public class TabuleiroServico {
         iniciarTabuleiro();
     }
 
+    //inicia o tabuleiro
     public void iniciarTabuleiro() {
         casasTabuleiro.forEach(CasaBotao::resetarCasa);
         tabuleiro = new Tabuleiro(comunicacaoServico.isServidor());
@@ -100,72 +103,82 @@ public class TabuleiroServico {
         turnoAtual.setText("Turno Atual: Jogador " + tabuleiro.getTurnoJogador().getTipo());
     }
 
+    //desabilita o botao pegar peça
     public void desabilitarBotaoPegarPeca(boolean desabilitar) {
         pegarPeca.setDisable(desabilitar);
     }
 
+    //desabilita o botao passar turnp
     public void desabilitarBotaoPassarTurno(boolean desabilitar) {
         passarTurno.setDisable(desabilitar);
     }
 
+    //jogador escreve uma mensagem no chat
     public void adicionarMensagemChat(int jogador, String mensagem) {
         chatServico.adicionarMensagemChat("O jogador " + jogador + " digitou: " + mensagem);
     }
 
+    //exibe a mensagem quando o jogador pega uma peça fora do tabuleiro
     public void pegarPeca() {
         chatServico.adicionarMensagemChat("O jogador " + tabuleiro.getTurnoJogador().getTipo() + " tirou 1 peça");
     }
 
+    //jogador passa o turno e exibe a mensagem do jogador que irá jogar
     public void passarTurno() {
         tabuleiro.mudarTurnoJogador();
         chatServico.adicionarMensagemChat("O turno é do jogador " + tabuleiro.getTurnoJogador().getTipo());
         setTextTurnoAtual();
     }
 
+    //jogador adiciona uma peça no tabuleiro e exibe a mensagem da posicao da casa aonde o jogador colocou a peça
     public void adicionarPeca(int posicao) {
         tabuleiro.getTurnoJogador().removerPecasForaTabuleiro();
         casasTabuleiro.get(posicao).colocarPeca(tabuleiro.getTurnoJogador());
+        chatServico.adicionarMensagemChat("O jogador " + tabuleiro.getTurnoJogador().getTipo() + " colocou uma peça na posicao " + posicao);
     }
 
-
+    //jogador seleciona uma peça do tabuleiro
     public void selecionarPeca(int posicaoFinal) {
         tabuleiro.setPosicaoInicial(posicaoFinal);
     }
 
-
+    //jogador movimenta uma peça no tabuleiro e exibe mensagem do jogador que moveu a peça
     public void andarPecar(int posicaoInicial, int posicaoFinal) {
         casasTabuleiro.get(posicaoInicial).removerPeca(tabuleiro.getTurnoJogador());
         casasTabuleiro.get(posicaoFinal).colocarPeca(tabuleiro.getTurnoJogador());
         chatServico.adicionarMensagemChat("O jogador " + tabuleiro.getTurnoJogador().getTipo() + " moveu a peça da casa " + posicaoInicial + " para " + posicaoFinal);
     }
 
+    //jogador captura uma peça e exibe a mensagem do jogador que capturou a peça do adversario
     public void capturarPeca(int posicaoInicial, int posicaoFinal, int posicaoVerificar) {
         casasTabuleiro.get(posicaoInicial).removerPeca(tabuleiro.getTurnoJogador());
         casasTabuleiro.get(posicaoFinal).colocarPeca(tabuleiro.getTurnoJogador());
         chatServico.adicionarMensagemChat("O jogador " + tabuleiro.getTurnoJogador().getTipo() + " capturou a peça da casa " + posicaoVerificar);
     }
 
+    //exibe a mensagem do jogador que removeu a peça
     public void removerOutraPeca(int posicao) {
         chatServico.adicionarMensagemChat("O jogador " + tabuleiro.getTurnoJogador().getTipo() + " removeu a peça da casa " + posicao);
     }
 
-
+    //exibe a mensagem do jogador vitorioso
     public void vitoria() {
         chatServico.adicionarMensagemChat("O jogador " + tabuleiro.getTurnoJogador().getTipo() + " ganhou a partida!");
     }
 
-
+    //exibe a mensagem de empate
     public void empate() {
         chatServico.adicionarMensagemChat("A partida terminou em empate");
         janelaAlerta.janelaAlertaRunLater("Resultado da partida", null, "Deu empate!");
     }
 
-
+    //exibe a mensagem de reinicio de partida
     public void reiniciarPartida() {
         chatServico.adicionarMensagemChat("O jogo foi reiniciado!");
         iniciarTabuleiro();
     }
 
+    //jogador sair da partida
     public void sairPartida() {
         comunicacaoServico.getComunicacao().fecharConexao();
     }

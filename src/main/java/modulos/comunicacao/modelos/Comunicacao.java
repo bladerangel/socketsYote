@@ -6,16 +6,15 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 
-
+//classe comunicacao modelo
 public class Comunicacao {
 
     private Socket cliente;
     private ServerSocket servidor;
-    private DataInputStream in;
-    private DataOutputStream out;
-    private String mensagem;
+    private DataInputStream fluxoEntradaDados;
+    private DataOutputStream fluxoSaidaDados;
+    private String mensagemRecebida;
 
     public void iniciarServidor(int porta) throws IOException {
         servidor = new ServerSocket(porta);
@@ -23,49 +22,54 @@ public class Comunicacao {
 
     public void iniciarCliente(int porta) throws IOException {
         cliente = new Socket(InetAddress.getLocalHost(), porta);
-        iniciarStreams();
+        iniciarFluxoDados();
     }
 
-    public void iniciarStreams() {
+    public void iniciarFluxoDados() {
         try {
-            out = new DataOutputStream(cliente.getOutputStream());
-            in = new DataInputStream(cliente.getInputStream());
+            fluxoSaidaDados = new DataOutputStream(cliente.getOutputStream());
+            fluxoEntradaDados = new DataInputStream(cliente.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
+    //verificar se o cliente está conectado
     public boolean isConectado() {
-       return !cliente.isOutputShutdown();
+        return !cliente.isOutputShutdown();
     }
 
+    //servidor esperando a conexao
     public void esperandoConexao() throws IOException {
         cliente = servidor.accept();
-        iniciarStreams();
+        iniciarFluxoDados();
     }
 
+    //enviando mensagem
     public void enviarPacote(String mensagem) {
         try {
-            out.writeUTF(mensagem);
-            out.flush();
+            fluxoSaidaDados.writeUTF(mensagem);
+            fluxoSaidaDados.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
+    //recebendo mensagem
     public String receberPacote() {
         try {
-            mensagem = in.readUTF();
-            System.out.println("Mensagem Recebida: " + mensagem);
+            mensagemRecebida = fluxoEntradaDados.readUTF();
+            System.out.println("Mensagem Recebida: " + mensagemRecebida);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return mensagem;
+        return mensagemRecebida;
 
     }
 
+    //fechar conexao com cliente
     public void fecharConexao() {
         try {
             cliente.shutdownOutput();

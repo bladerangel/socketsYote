@@ -9,8 +9,9 @@ import modulos.comunicacao.servicos.ComunicacaoServico;
 import modulos.tabuleiro.servicos.TabuleiroEnviarPacoteServico;
 import modulos.tabuleiro.servicos.TabuleiroReceberPacoteServicos;
 import modulos.tabuleiro.servicos.TabuleiroServico;
-import utils.JanelaAlerta;
+import utilitarios.JanelaAlerta;
 
+//classe servico main usado no controlador
 public class MainServico {
 
     private ComunicacaoServico comunicacaoServico;
@@ -24,13 +25,13 @@ public class MainServico {
 
         janelaAlerta = new JanelaAlerta();
         comunicacaoServico = new ComunicacaoServico(janelaAlerta);
-        comunicacaoServico.iniciarComunicacao();
+        comunicacaoServico.iniciarComunicacao(); //inicia a comunicacao
         chatServico = new ChatServico(escreverMensagem, chat);
         tabuleiroServico = new TabuleiroServico(tabuleiroPane, numeroPecas, numeroPecasAdversarias, tipoJogador, turnoAtual, pegarPeca, passarTurno, janelaAlerta, chatServico, comunicacaoServico);
-        tabuleiroServico.iniciarPartida();
+        tabuleiroServico.iniciarPartida(); //inicia a partida
         tabuleiroEnviarPacoteServico = new TabuleiroEnviarPacoteServico(janelaAlerta, tabuleiroServico, comunicacaoServico, chatServico);
         tabuleiroReceberPacoteServicos = new TabuleiroReceberPacoteServicos(janelaAlerta, tabuleiroServico, comunicacaoServico, chatServico);
-        tabuleiroReceberPacoteServicos.iniciarThreadRecebePacotes();
+        tabuleiroReceberPacoteServicos.iniciarThreadRecebePacotes(); //inicia thread responsavel por receber as mensagens
     }
 
     public ChatServico getChatServico() {

@@ -3,6 +3,7 @@ package modulos.tabuleiro.modelos;
 import modulos.casa.modelos.Casa;
 import modulos.jogador.modelos.Jogador;
 
+//classe tabuleiro modelo
 public class Tabuleiro {
 
     private Jogador jogador;
@@ -13,6 +14,7 @@ public class Tabuleiro {
     public static final int POSICAO_INICIAL_VAZIA = -1;
     private int posicaoInicial;
 
+    //inicia o tabuleiro de acordo com o tipo de jogador conectado
     public Tabuleiro(boolean servidor) {
         if (servidor) {
             jogador = new Jogador(Jogador.TIPO_JOGADOR_SERVIDOR, Jogador.QUANTIDADE_PECAS, Casa.CASA_VAZIA);
@@ -26,6 +28,7 @@ public class Tabuleiro {
         posicaoInicial = POSICAO_INICIAL_VAZIA;
     }
 
+    //muda o turno da partida
     public void mudarTurnoJogador() {
         if (turnoJogador == jogador)
             turnoJogador = jogadorAdversario;
