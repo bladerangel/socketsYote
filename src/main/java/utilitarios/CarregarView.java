@@ -26,6 +26,7 @@ public class CarregarView {
         try {
             cena = new Scene(this.fxmlLoader.load());
             this.estagio.setScene(cena);
+            this.estagio.setResizable(false);
         } catch (IOException e) {
             e.printStackTrace();
         }
