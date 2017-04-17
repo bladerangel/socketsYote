@@ -89,11 +89,11 @@ public class TabuleiroServico {
     }
 
     public void setTextNumeroPecas() {
-        numeroPecas.setText(tabuleiro.getJogador().getQuantidadePecasForaTabuleiro() + " peças restantes - " + tabuleiro.getJogador().totalPecas() + " no total");
+        numeroPecas.setText(tabuleiro.getJogador().getQuantidadePecasForaTabuleiro() + " peças restantes");
     }
 
     public void setTextNumeroPecasAdversarias() {
-        numeroPecasAdversarias.setText(tabuleiro.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes - " + tabuleiro.getJogadorAdversario().totalPecas() + " no total");
+        numeroPecasAdversarias.setText(tabuleiro.getJogadorAdversario().getQuantidadePecasForaTabuleiro() + " peças adversarias restantes");
     }
 
     public void setTextTurnoAtual() {
