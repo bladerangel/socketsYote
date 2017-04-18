@@ -5,7 +5,7 @@ import modulos.comunicacao.servicos.ComunicacaoServico;
 import utilitarios.JanelaAlerta;
 
 //classe servico recebe pacote tabuleiro usado no controlador
-public class TabuleiroReceberPacoteServicos {
+public class TabuleiroReceberPacoteServico {
 
 
     private JanelaAlerta janelaAlerta;
@@ -13,7 +13,7 @@ public class TabuleiroReceberPacoteServicos {
     private ComunicacaoServico comunicacaoServico;
     private ChatServico chatServico;
 
-    public TabuleiroReceberPacoteServicos(JanelaAlerta janelaAlerta, TabuleiroServico tabuleiroServico, ComunicacaoServico comunicacaoServico, ChatServico chatServico) {
+    public TabuleiroReceberPacoteServico(JanelaAlerta janelaAlerta, TabuleiroServico tabuleiroServico, ComunicacaoServico comunicacaoServico, ChatServico chatServico) {
         this.janelaAlerta = janelaAlerta;
         this.tabuleiroServico = tabuleiroServico;
         this.comunicacaoServico = comunicacaoServico;
