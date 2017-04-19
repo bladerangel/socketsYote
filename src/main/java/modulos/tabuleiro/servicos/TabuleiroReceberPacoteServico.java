@@ -50,7 +50,7 @@ public class TabuleiroReceberPacoteServico {
                     recebePacoteDesistirPartida(Integer.parseInt(mensagemRecebida.split(":")[1]));
                 } else if (mensagemRecebida.matches("^sairPartida:\\d$")) {
                     receberPacoteSairPartida(Integer.parseInt(mensagemRecebida.split(":")[1]));
-                } else if (mensagemRecebida.matches("^jogadorDigitou:\\d:\\w+$")) {
+                } else if (mensagemRecebida.matches("^jogadorDigitou:\\d:(\\W*\\w*)*$")) {
                     String[] mensagem = mensagemRecebida.split(":");
                     receberPacoteMensagemChat(Integer.parseInt(mensagem[1]), mensagem[2]);
                 }
